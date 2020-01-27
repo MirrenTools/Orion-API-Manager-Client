@@ -1,5 +1,5 @@
 # Introduction
-this is [Orion-API-Manager] (https://github.com/MirrenTools/Orion-API-Manager) client
+this is [Orion-API-Manager](https://github.com/MirrenTools/Orion-API-Manager) client
 ## Project setup
 ```
 npm install
