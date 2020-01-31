@@ -565,6 +565,7 @@ export default {
 				return;
 			}
 			//加载项目信息
+			this.projectId=data.key;
 			this.project.key = data.key;
 			this.project.name = data.name;
 			this.project.versions = data.versions;
