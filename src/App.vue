@@ -167,10 +167,20 @@
 								</div>
 							</div>
 							<div class="api-body-param-path plrrem05">
-								<el-table ref="requestParamsTable" :data="api.parameters" tooltip-effect="dark" style="width: 100%" empty-text="无需请求参数">
+								<el-table
+									ref="requestParamsTable"
+									:data="api.parameters"
+									row-key="description"
+									default-expand-all
+									:tree-props="{ children: 'items', hasChildren: 'hasChildren' }"
+									tooltip-effect="dark"
+									style="width: 100%"
+									empty-text="无需请求参数"
+								>
 									<el-table-column prop="join" label="加入" width="50" align="center">
 										<template slot-scope="scope">
 											<el-checkbox
+												v-if="scope.row.join != null"
 												v-model="scope.row.join"
 												:id="'api-parameters-join-' + scope.$index"
 												@click.native.prevent="changeCheckBoxSelect('api-parameters-join-' + scope.$index, scope.row)"
@@ -183,7 +193,7 @@
 									<el-table-column prop="name" label="参数名称" min-width="100"></el-table-column>
 									<el-table-column prop="value" label="参数值" min-width="200">
 										<template slot-scope="scope">
-											<el-input placeholder="请输入参数值" v-model="scope.row.value"></el-input>
+											<el-input v-if="scope.row.join != null" placeholder="请输入参数值" v-model="scope.row.value"></el-input>
 										</template>
 									</el-table-column>
 									<el-table-column prop="description" label="参数描述" min-width="150" show-overflow-tooltip></el-table-column>
@@ -399,6 +409,9 @@ export default {
 							}
 							if (api.parameters[i].explain.max != null && api.parameters[i].explain.max != '') {
 								contains += '最大: ' + api.parameters[i].explain.max + '　';
+							}
+							if (api.parameters[i].explain.items != null && api.parameters[i].explain.items != '') {
+								api.parameters[i].items = api.parameters[i].explain.items;
 							}
 						}
 						if (api.parameters[i].pattern != null && api.parameters[i].pattern != '') {
