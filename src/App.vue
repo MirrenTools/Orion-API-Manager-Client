@@ -134,7 +134,7 @@
 							<div class="api-header-item" style="display: flex;flex-wrap: wrap;">
 								<div class="flexCenter">请求URL:&nbsp;</div>
 								<div style="width: 90%;" class="flexCenter">
-									<el-input placeholder="请输入内容" size="mini" v-model="api.url">
+									<el-input placeholder="请输入内容" size="mini" v-model="requestUrl">
 										<el-select v-model="api.scheme" slot="prepend" placeholder="请选择" style="width: 6rem;color: #222;">
 											<el-option v-for="(se, index) in project.schemes" :key="index" :label="se" :value="se"></el-option>
 										</el-select>
@@ -278,6 +278,8 @@ export default {
 			fileUrl: null,
 			//项目的id
 			projectId: null,
+			//请求后台的URL
+			requestUrl:'',
 			// 项目列表
 			projects: [],
 			//项目的API分组
@@ -387,7 +389,7 @@ export default {
 			api.method = data.method;
 			api.methodUpperCase = data.method.toUpperCase();
 			api.scheme = this.project.schemes[0];
-			api.url = (this.project.host || '') + (this.project.basePath || '') + data.path;
+			this.requestUrl = (this.project.host || '') + (this.project.basePath || '') + data.path;
 			api.description = data.description;
 			api.externalDocs = data.externalDocs;
 			api.parameters = data.parameters;
@@ -590,12 +592,12 @@ export default {
 			});
 		},
 		copy() {
-			var data = this.api.scheme + '://' + this.api.url;
+			var data = this.api.scheme + '://' + this.requestUrl;
 			console.log('copy:data=' + data);
 			this.toCopy(data);
 		},
 		copyPath() {
-			var data = this.api.url.replace(this.project.host + (this.project.basePath || ''), '');
+			var data = this.requestUrl.url.replace(this.project.host + (this.project.basePath || ''), '');
 			console.log('copy-path:data=' + data);
 			this.toCopy(data);
 		},
@@ -615,7 +617,7 @@ export default {
 		execute() {
 			var type = this.api.requestType;
 			var method = this.api.method;
-			var url = this.api.scheme + '://' + this.api.url;
+			var url = this.api.scheme + '://' + this.requestUrl;
 			var isProxy = this.api.proxy;
 			var header = null;
 			var query = null;
