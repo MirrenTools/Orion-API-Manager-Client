@@ -13,18 +13,23 @@
 			</a>
 			<ul id="nav">
 				<li style="width: 450px;">
-					<el-input placeholder="文档的URL,代理请求可加上P: 示例:P:https://xxx.xxx/xx" v-model="fileUrl" class="input-with-select">
-						<el-button slot="append" @click="getProjectFromUrl">加载</el-button>
+					<el-input :placeholder="$t('fileUrl')" v-model="fileUrl" class="input-with-select">
+						<el-button slot="append" @click="getProjectFromUrl">{{ $t('load') }}</el-button>
 					</el-input>
 				</li>
 				<li>
-					<a @click="$refs.readFile.click()">本地加载</a>
+					<a @click="$refs.readFile.click()">{{ $t('localFile') }}</a>
 					<input type="file" style="display: none" accept=".json,.txt" ref="readFile" @change="getProjectFromFile" />
 				</li>
-				<li style="text-align: center;"><a @click="drawer = true">项目切换</a></li>
+				<li style="text-align: center;">
+					<a @click="customRequest">{{ $t('requestTest') }}</a>
+				</li>
+				<li style="text-align: center;">
+					<a @click="drawer = true">{{ $t('projectSwitch') }}</a>
+				</li>
 			</ul>
 		</el-header>
-		<el-drawer title="项目列表" direction="btt" :visible.sync="drawer">
+		<el-drawer :title="$t('projectList')" direction="btt" :visible.sync="drawer">
 			<div>
 				<p v-for="item in projects" :key="item.key">
 					<a :href="['./index.html?id=' + item.key]">{{ item.name }}</a>
@@ -35,9 +40,11 @@
 			<!-- 侧边栏 -->
 			<el-aside id="aside" width="25%" v-show="isAsideShow">
 				<ul id="menu-body">
-					<li style="text-align: center;" v-show="!isMainShow"><a @click="drawer = true">项目切换</a></li>
-					<div v-if="projectId == null" style="text-align: center;padding-top: 30px;">尚未加载项目</div>
-					<div v-if="projectId != null && !apiGroups" style="text-align: center;padding-top: 30px;">尚无API</div>
+					<li style="text-align: center;" v-show="!isMainShow">
+						<a @click="drawer = true">{{ $t('projectSwitch') }}</a>
+					</li>
+					<div v-if="projectId == null" style="text-align: center;padding-top: 30px;">{{ $t('projectNotLoaded') }}</div>
+					<div v-if="projectId != null && !apiGroups" style="text-align: center;padding-top: 30px;">{{ $t('noApi') }}</div>
 					<li v-for="(group, gindex) in apiGroups" :key="group.groupId">
 						<span :class="{ current: menuCurrent == gindex }" @click="currentActive(gindex, -1)">{{ group.name }}</span>
 						<ul v-if="group.apis" class="menu-sub">
@@ -58,30 +65,42 @@
 				<!-- 项目信息 -->
 				<div v-show="menuCurrent == -1">
 					<el-row :gutter="15" class="mb10px" v-if="project.name">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>项目</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('project') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">
 							{{ project.name }}
 							<span style="color: #666;font-size: 13px;">{{ project.versions }}</span>
 						</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.description">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>描述</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('description') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.description }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.schemes">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>请求协议</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('schemes') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.schemes }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.host">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>主机地址</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('host') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.host }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.basePath">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>根路径</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('basePath') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.basePath }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.externalDocs">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>附加文档</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('additionalDocument') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">
 							{{ project.externalDocs.description }}
 							<br />
@@ -89,34 +108,48 @@
 						</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.contactName">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>联系人</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('contacts') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.contactName }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.contactInfo">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>联系信息</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('contactsInfo') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.contactInfo }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.lastTime">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>时间</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('datetime') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ project.lastTime }}</el-col>
 					</el-row>
 				</div>
 				<!-- 分组信息 -->
 				<div v-show="menuCurrent != -1 && menuSubCurrent == -1">
 					<el-row :gutter="15" class="mb10px">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>分组名称</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('groupName') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ group.name }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>分组简介</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('groupSummary') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ group.summary }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth" v-if="group.description"><b>分组描述</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth" v-if="group.description">
+							<b>{{ $t('groupDescription') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">{{ group.description }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="group.externalDocs">
-						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth"><b>附加文档</b></el-col>
+						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
+							<b>{{ $t('additionalDocument') }}</b>
+						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">
 							{{ group.externalDocs.description }}
 							<br />
@@ -127,15 +160,15 @@
 				<!-- API的信息 -->
 				<div v-show="menuSubCurrent != -1">
 					<div class="api-body" :class="['api-body-' + api.method]">
-						<div class="prem05" v-if="api.deprecated">{{ api.deprecated ? '该接口已过时!!!' : '' }}</div>
-						<div class="api-header" :class="['api-header-' + api.method]" :style="api.deprecated ? 'text-decoration: line-through;' : ''">
+						<div class="prem05" v-if="api.deprecated">{{ api.deprecated ? $t('apiDeprecated') : '' }}</div>
+						<div v-if="menuSubCurrent != 999999" class="api-header" :class="['api-header-' + api.method]" :style="api.deprecated ? 'text-decoration: line-through;' : ''">
 							<div class="api-header-item">{{ api.title }}</div>
-							<div class="api-header-item">请求方法: {{ api.methodUpperCase }}</div>
+							<div class="api-header-item">{{ $t('apiMethod') }}: {{ api.methodUpperCase }}</div>
 							<div class="api-header-item" style="display: flex;flex-wrap: wrap;">
-								<div class="flexCenter">请求URL:&nbsp;</div>
+								<div class="flexCenter">{{ $t('requestURL') }}:&nbsp;</div>
 								<div style="width: 90%;" class="flexCenter">
-									<el-input placeholder="请输入内容" size="mini" v-model="requestUrl">
-										<el-select v-model="api.scheme" slot="prepend" placeholder="请选择" style="width: 6rem;color: #222;">
+									<el-input :placeholder="$t('inputHostAndPath')" size="mini" v-model="requestUrl">
+										<el-select v-model="api.scheme" slot="prepend" :placeholder="$t('choose')" style="width: 6rem;color: #222;">
 											<el-option v-for="(se, index) in project.schemes" :key="index" :label="se" :value="se"></el-option>
 										</el-select>
 										<el-button slot="append" style="color: #222;" @click="copy">Copy</el-button>
@@ -144,10 +177,40 @@
 								</div>
 							</div>
 						</div>
+						<!-- 自定义请求的URL -->
+						<div v-if="menuSubCurrent == 999999" class="api-header" :class="['api-header-' + api.method]" :style="api.deprecated ? 'text-decoration: line-through;' : ''">
+							<div class="api-header-item" style="display: flex;flex-wrap: wrap;">
+								<div class="flexCenter">{{ $t('requestURL') }}:&nbsp;</div>
+								<div style="width: 90%;" class="flexCenter">
+									<el-input :placeholder="$t('inputRequestURL')" size="mini" v-model="requestUrl">
+										<el-select v-model="api.method" slot="prepend" :placeholder="$t('choose')" style="width: 6rem;color: #222;">
+											<el-option value="get">GET</el-option>
+											<el-option value="post">POST</el-option>
+											<el-option value="options">OPTIONS</el-option>
+											<el-option value="head">HEAD</el-option>
+											<el-option value="put">PUT</el-option>
+											<el-option value="delete">DELETE</el-option>
+											<el-option value="trace">TRACE</el-option>
+											<el-option value="connect">CONNECT</el-option>
+											<el-option value="patch">PATCH</el-option>
+											<el-option value="other">OTHER</el-option>
+										</el-select>
+										<el-button slot="append" style="color: #222;" @click="copyCustom">Copy</el-button>
+									</el-input>
+								</div>
+							</div>
+						</div>
+						<!-- 接口的描述 -->
 						<div class="prem05 background-color-white">
 							<div v-html="api.description"></div>
+							<div v-for="(addi, index) in api.additional">
+								<div style="margin-top: 5px;">
+									<b>{{ addi.title }}</b>
+								</div>
+								<div v-html="addi.description.replace(/\n/g, '<br>')"></div>
+							</div>
 							<div v-if="api.externalDocs" style="display: flex; flex-wrap: wrap;margin-top: 0.5rem;">
-								<div style="padding-right: 0.5rem;">附加文档</div>
+								<div style="padding-right: 0.5rem;">{{ $t('additionalDocument') }}</div>
 								<div>
 									{{ api.externalDocs.description }}
 									<br />
@@ -155,11 +218,12 @@
 								</div>
 							</div>
 						</div>
-						<div class="api-body-params" v-if="api.parameters">
+						<!-- 请求参数 -->
+						<div class="api-body-params" v-if="(api.parameters && api.parameters.length > 0) || menuSubCurrent == 999999">
 							<div class="api-body-param-header">
-								<div style="display: flex;">请求参数</div>
+								<div style="display: flex;">{{ $t('requestParams') }}</div>
 								<div style="display: flex;align-items: first baseline;">
-									请求类型&nbsp;
+									{{ $t('requestType') }}&nbsp;
 									<el-select v-model="api.requestType" size="mini">
 										<el-option label="x-www-form-urlencoded" value="x-www-form-urlencoded"></el-option>
 										<el-option label="application/json" value="application/json"></el-option>
@@ -167,7 +231,9 @@
 								</div>
 							</div>
 							<div class="api-body-param-path plrrem05">
+								<!-- 默认请求的参数 -->
 								<el-table
+									v-if="api.parameters && api.parameters.length > 0"
 									ref="requestParamsTable"
 									:data="api.parameters"
 									row-key="description"
@@ -175,9 +241,9 @@
 									:tree-props="{ children: 'items', hasChildren: 'hasChildren' }"
 									tooltip-effect="dark"
 									style="width: 100%"
-									empty-text="无需请求参数"
+									:empty-text="$t('requestParamsEnpty')"
 								>
-									<el-table-column prop="join" label="加入" width="50" align="center">
+									<el-table-column prop="join" :label="$t('paramsJoin')" width="50" align="center">
 										<template slot-scope="scope">
 											<el-checkbox
 												v-if="scope.row.join != null"
@@ -187,58 +253,127 @@
 											></el-checkbox>
 										</template>
 									</el-table-column>
-									<el-table-column prop="required" label="必填" width="50"></el-table-column>
-									<el-table-column prop="in" label="参数位置" width="100"></el-table-column>
-									<el-table-column prop="type" label="参数类型" width="100"></el-table-column>
-									<el-table-column prop="name" label="参数名称" min-width="100"></el-table-column>
-									<el-table-column prop="value" label="参数值" min-width="200">
+									<el-table-column prop="required" :label="$t('paramsRequired')" width="60"></el-table-column>
+									<el-table-column prop="in" :label="$t('paramsPosition')" width="100"></el-table-column>
+									<el-table-column prop="type" :label="$t('paramsType')" width="100"></el-table-column>
+									<el-table-column prop="name" :label="$t('paramsName')" min-width="100"></el-table-column>
+									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
 										<template slot-scope="scope">
-											<el-input v-if="scope.row.join != null" placeholder="请输入参数值" v-model="scope.row.value"></el-input>
+											<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value"></el-input>
 										</template>
 									</el-table-column>
-									<el-table-column prop="description" label="参数描述" min-width="150" show-overflow-tooltip></el-table-column>
-									<el-table-column prop="contains" label="参数说明" min-width="150" show-overflow-tooltip></el-table-column>
+									<el-table-column prop="description" :label="$t('paramsDescription')" min-width="150" show-overflow-tooltip></el-table-column>
+									<el-table-column prop="contains" :label="$t('paramsContains')" min-width="150" show-overflow-tooltip></el-table-column>
 								</el-table>
 							</div>
+							<div>
+								<!-- 自定义请求的参数 -->
+								<el-table
+									v-if="menuSubCurrent == 999999"
+									ref="customRequestParamsTable"
+									:data="customRequestParams"
+									row-key="description"
+									tooltip-effect="dark"
+									style="width: 100%"
+									:empty-text="$t('requestParamsEnpty')"
+								>
+									<el-table-column prop="join" :label="$t('paramsJoin')" width="50" align="center">
+										<template slot-scope="scope">
+											<el-checkbox
+												v-if="scope.row.join != null"
+												v-model="scope.row.join"
+												:id="'custom-parameters-join-' + scope.$index"
+												@click.native.prevent="changeCheckBoxSelect('custom-parameters-join-' + scope.$index, scope.row)"
+											></el-checkbox>
+										</template>
+									</el-table-column>
+									<el-table-column prop="in" :label="$t('paramsPosition')" min-width="120">
+										<template slot-scope="scope">
+											<el-select v-model="scope.row.in">
+												<el-option value="query">query</el-option>
+												<el-option value="path">path</el-option>
+												<el-option value="header">header</el-option>
+												<el-option value="formdata">formdata</el-option>
+												<el-option value="body">body</el-option>
+											</el-select>
+										</template>
+									</el-table-column>
+									<el-table-column prop="type" :label="$t('paramsType')" min-width="120">
+										<template slot-scope="scope">
+											<el-select v-model="scope.row.type">
+												<el-option value="string">string</el-option>
+												<el-option value="int">int</el-option>
+												<el-option value="long">long</el-option>
+												<el-option value="float">float</el-option>
+												<el-option value="double">double</el-option>
+												<el-option value="number">number</el-option>
+												<el-option value="boolean">boolean</el-option>
+												<el-option value="object">object</el-option>
+												<el-option value="array">array</el-option>
+											</el-select>
+										</template>
+									</el-table-column>
+									<el-table-column prop="name" :label="$t('paramsName')" min-width="200">
+										<template slot-scope="scope">
+											<el-input :placeholder="$t('inputParamsName')" v-model="scope.row.name"></el-input>
+										</template>
+									</el-table-column>
+									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
+										<template slot-scope="scope">
+											<el-input :placeholder="$t('inputParamsValue')" v-model="scope.row.value"></el-input>
+										</template>
+									</el-table-column>
+								</el-table>
+								<div v-if="menuSubCurrent == 999999" style="text-align: center;background-color: #FFF;line-height: 60px;">
+									<el-button type="primary" size="small" @click="addCustomRequestParams">{{ $t('addRequestParams') }}</el-button>
+								</div>
+							</div>
 						</div>
+						<!-- 响应数据 -->
 						<div class="api-body-result">
 							<div v-for="item in api.responses">
 								<div class="api-body-result-header">
-									<div style="display: flex;">返回结果－状态码: {{ item.status }}</div>
+									<div style="display: flex;">{{ $t('responseStatusCode') }}: {{ item.status }}</div>
 									<div style="display: flex;align-items: first baseline;">{{ item.msg }}&nbsp;</div>
 								</div>
 								<div class="plrrem05">
 									<el-table :data="item.data" row-key="description" border default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }">
-										<el-table-column prop="type" label="参数类型" width="200"></el-table-column>
-										<el-table-column prop="name" label="参数名称" width="200"></el-table-column>
-										<el-table-column prop="description" label="参数描述"></el-table-column>
+										<el-table-column prop="type" :label="$t('paramsType')" width="200"></el-table-column>
+										<el-table-column prop="name" :label="$t('paramsName')" width="200"></el-table-column>
+										<el-table-column prop="description" :label="$t('paramsDescription')"></el-table-column>
 									</el-table>
 								</div>
 							</div>
 						</div>
 						<div class="api-body-response-header">
-							<div style="display: flex;align-items: first baseline;"><span v-show="api.isSxecute">响应结果</span></div>
+							<div style="display: flex;align-items: first baseline;">
+								<span v-show="api.isSxecute">{{ $t('responseResult') }}</span>
+							</div>
 							<div style="display: flex;flex-wrap: wrap;align-items: center;">
-								<div style="margin-right: 0.7rem;"><el-checkbox v-model="api.proxy">使用代理</el-checkbox></div>
+								<div style="margin-right: 0.7rem;">
+									<el-checkbox v-model="api.proxy">{{ $t('useProxy') }}</el-checkbox>
+								</div>
 								<div>
-									<el-button style="background-color: #42b983; color: white;" @click="execute" :loading="api.executing">{{ api.executing ? '请求中...' : '执行请求' }}</el-button>
+									<el-button style="background-color: #42b983; color: white;" @click="execute" :loading="api.executing">
+										{{ api.executing ? $t('executing') : $t('execute') }}
+									</el-button>
 								</div>
 							</div>
 						</div>
 						<div class="api-body-response-body" v-show="api.isSxecute">
 							<el-tabs style="width: 100%;" v-model="api.responseTags">
-								<el-tab-pane label="美化数据" name="format"><json-viewer :expand-depth="10" :value="api.response" /></el-tab-pane>
-								<el-tab-pane label="原始数据" name="original">
+								<el-tab-pane :label="$t('beautifyData')" name="format"><json-viewer :expand-depth="10" :value="api.response" /></el-tab-pane>
+								<el-tab-pane :label="$t('originalData')" name="original">
 									<pre><code>{{api.response}}</code></pre>
 								</el-tab-pane>
-								<el-tab-pane label="header信息" name="header" style="color: #409eff;">
-									<el-divider content-position="left" v-if="api.requestHenders">请求头信息</el-divider>
+								<el-tab-pane :label="$t('headerInfo')" name="header" style="color: #409eff;">
+									<el-divider content-position="left" v-if="api.requestHenders">{{ $t('requestHeader') }}</el-divider>
 									<div v-for="(value, key) in api.requestHenders" style="display: flex;">
 										<div>{{ key }}</div>
 										<div style="margin: 0 0.5rem;">:</div>
 										<div style="color: #ff7de9;">{{ value }}</div>
 									</div>
-									<el-divider content-position="left" v-if="api.responseHeaders">响应头信息</el-divider>
+									<el-divider content-position="left" v-if="api.responseHeaders">{{ $t('responseHeader') }}</el-divider>
 									<div v-for="(value, key) in api.responseHeaders" style="display: flex;">
 										<div>{{ key }}</div>
 										<div style="margin: 0 0.5rem;">:</div>
@@ -279,7 +414,9 @@ export default {
 			//项目的id
 			projectId: null,
 			//请求后台的URL
-			requestUrl:'',
+			requestUrl: '',
+			//请求后台的参数
+			customRequestParams: [],
 			// 项目列表
 			projects: [],
 			//项目的API分组
@@ -298,6 +435,8 @@ export default {
 				// url: '接口路径host+basePath+path',
 				// title: '接口的名称',
 				// description: '接口的描述',
+				// 附加说明
+				// additional:[{title:'附加说明的标题',description:'附加说明的详情'}],
 				// 附加文档
 				// externalDocs: { url: '连接', description: '描述' },
 				//请求的content-type类型
@@ -339,8 +478,12 @@ export default {
 		};
 	},
 	methods: {
+		/**
+		 * 修改请求参数是否选中的显示状态
+		 * @param {Integer} id
+		 * @param {Integer} row
+		 */
 		changeCheckBoxSelect(id, row) {
-			//修改请求参数是否选中的显示状态
 			row.join = !row.join;
 			if (row.join) {
 				document.getElementById(id).classList.add('is-checked');
@@ -350,8 +493,10 @@ export default {
 				document.getElementById(id).children[0].classList.remove('is-checked');
 			}
 		},
+		/**
+		 * 显示侧边栏
+		 */
 		showAside() {
-			// 显示侧边栏
 			if (this.isAsideShow === false) {
 				this.isAsideShow = true;
 				this.isMainShow = false;
@@ -360,8 +505,10 @@ export default {
 				this.isMainShow = true;
 			}
 		},
+		/**
+		 * 关闭侧边栏
+		 */
 		closeAside() {
-			// 关闭侧边栏
 			if (this.isAsideShow === false) {
 				this.isAsideShow = true;
 				this.isMainShow = false;
@@ -370,8 +517,12 @@ export default {
 				this.isMainShow = true;
 			}
 		},
+		/**
+		 * 激活当前选中
+		 * @param {Integer} parent
+		 * @param {Integer} sub
+		 */
 		currentActive(parent, sub) {
-			// 激活当前选中
 			this.menuCurrent = parent;
 			this.menuSubCurrent = sub;
 			if (this.isMainShow === false) {
@@ -383,6 +534,8 @@ export default {
 			if (data == null) {
 				return;
 			}
+			this.requestUrl = '';
+			this.customRequestParams = null;
 			var api = this.api;
 			api.title = data.title;
 			api.deprecated = data.deprecated;
@@ -391,55 +544,70 @@ export default {
 			api.scheme = this.project.schemes[0];
 			this.requestUrl = (this.project.host || '') + (this.project.basePath || '') + data.path;
 			api.description = data.description;
+			api.additional = data.additional;
+			// if(api.additional!=null&&api.additional.length>0){
+			// 	for(var i=0;i<api.additional.length;i++){
+			// 		api.additional[i].description.replace(/\n/g,'<br>')
+			// 	}
+			// }
 			api.externalDocs = data.externalDocs;
 			api.parameters = data.parameters;
 			api.version = data.version; //新版API还是旧版api,没有version代表旧版的api
+			//国际化字符串
+			var i18nDef = this.$t('defaults');
+			var i18nEnum = this.$t('enums');
+			var i18nMin = this.$t('min');
+			var i18nMax = this.$t('max');
+			var i18nMinLength = this.$t('minLength');
+			var i18nMaxLength = this.$t('maxLength');
+			var i18nPattern = this.$t('pattern');
+
 			if (api.parameters != null) {
 				for (var i = 0; i < api.parameters.length; i++) {
 					api.parameters[i].join = api.parameters[i].required == 'true';
 					var contains = '';
 					if (api.version == null) {
 						if (api.parameters[i].default != null && api.parameters[i].default != '') {
-							contains += '默认值: ' + api.parameters[i].default + '　';
+							contains += i18nDef + api.parameters[i].default + '　';
 						}
 						if (api.parameters[i].enum != null && api.parameters[i].enum != '') {
-							contains += '枚举值: ' + api.parameters[i].enum + '　';
+							contains += i18nEnum + api.parameters[i].enum + '　';
 						}
 						if (api.parameters[i].explain != null && api.parameters[i].explain != '') {
 							if (api.parameters[i].explain.min != null && api.parameters[i].explain.min != '') {
-								contains += '最小: ' + api.parameters[i].explain.min + '　';
+								contains += i18nMin + api.parameters[i].explain.min + '　';
 							}
 							if (api.parameters[i].explain.max != null && api.parameters[i].explain.max != '') {
-								contains += '最大: ' + api.parameters[i].explain.max + '　';
+								contains += i18nMax + api.parameters[i].explain.max + '　';
 							}
 							if (api.parameters[i].explain.items != null && api.parameters[i].explain.items != '') {
 								api.parameters[i].items = api.parameters[i].explain.items;
 							}
 						}
 						if (api.parameters[i].pattern != null && api.parameters[i].pattern != '') {
-							contains += '正则表达式: ' + api.parameters[i].pattern + '　';
+							contains += i18nPattern + api.parameters[i].pattern + '　';
 						}
 					} else {
 						if (api.parameters[i].def != null && api.parameters[i].def != '') {
-							contains += '默认值: ' + api.parameters[i].def + '　';
+							contains += i18nDef + api.parameters[i].def + '　';
 						}
 						if (api.parameters[i].enums != null && api.parameters[i].enums != '') {
-							contains += '枚举值: ' + api.parameters[i].enums + '　';
+							contains += i18nEnum + api.parameters[i].enums + '　';
 						}
 						if (api.parameters[i].minLength != null && api.parameters[i].minLength != '') {
-							contains += '最小长度: ' + api.parameters[i].minLength + '　';
+							contains += i18nMinLength + api.parameters[i].minLength + '　';
 						}
 						if (api.parameters[i].maxLength != null && api.parameters[i].maxLength != '') {
-							contains += '最大长度: ' + api.parameters[i].maxLength + '　';
+							contains += i18nMaxLength + api.parameters[i].maxLength + '　';
 						}
 						if (api.parameters[i].minValue != null && api.parameters[i].minValue != '') {
-							contains += '最小值: ' + api.parameters[i].minValue + '　';
+							contains += i18nMin + api.parameters[i].minValue + '　';
 						}
 						if (api.parameters[i].maxValue != null && api.parameters[i].maxValue != '') {
-							contains += '最大值: ' + api.parameters[i].maxValue + '　';
+							contains += i18nMax + api.parameters[i].maxValue + '　';
 						}
 						if (api.parameters[i].regex != null && api.parameters[i].regex != '') {
-							contains += '正则表达式: ' + api.parameters[i].regex + '　';
+							contains += i18nPattern + api.parameters[i].regex + '　';
 						}
 					}
 					if (contains != '') {
@@ -453,32 +621,73 @@ export default {
 			}
 			api.isSxecute = false;
 		},
+		/**
+		 * 自定义请求测试
+		 */
+		customRequest() {
+			this.menuCurrent = 999999;
+			this.menuSubCurrent = 999999;
+			this.requestUrl = '';
+			this.customRequestParams = [];
+			this.api = {
+				requestType: 'x-www-form-urlencoded',
+				parameters: null,
+				responses: null,
+				proxy: false,
+				responseTags: 'format',
+				requestHenders: {},
+				responseHeaders: {},
+				response: {},
+				isSxecute: false,
+				executing: false
+			};
+		},
+		/**
+		 * 添加自定义请求参数
+		 */
+		addCustomRequestParams() {
+			var param = {
+				join: true,
+				in: 'query',
+				type: 'string',
+				name: '',
+				value: ''
+			};
+			this.customRequestParams.push(param);
+		},
+		/**
+		 * 加载所有项目
+		 */
 		loadProjectList() {
-			//加载所有项目
 			var tis = this;
 			axios
 				.get(SERVER_HOST + '/project/')
 				.then(res => {
 					var data = res.data;
 					if (data.code === 200) {
-						console.log('加载项目列表成功!');
+						console.log('Loading project list succeeded!');
 						tis.projects = data.data;
 						tis.api.proxy = true;
 					} else {
-						console.log('加载项目列表失败:');
+						console.log('Loading project list failed:');
 						console.log(res);
 					}
 				})
 				.catch(err => {
-					console.log('请求项目列表失败:');
+					console.log('Loading project list failed:');
 					console.log(err);
 				});
 		},
+		/**
+		 * 通过id加载项目信息
+		 * @param {String} id
+		 */
 		getProject(id) {
-			// 通过id加载项目信息
 			if (id == null || id == '') {
 				return;
 			}
+			var i18nTitle = this.$t('loadFailed');
+			var i18nTips = this.$t('loadFailedTips');
 			var tis = this;
 			axios
 				.get(SERVER_HOST + '/project/getJson/' + id)
@@ -488,19 +697,26 @@ export default {
 				})
 				.catch(err => {
 					tis.$notify.error({
-						title: '加载失败',
-						message: '加载项目信息失败,更多信息请查看控制台',
+						title: i18nTitle,
+						message: i18nTips,
 						position: 'bottom-right'
 					});
 					console.log(err);
 				});
 		},
+		/**
+		 * 通过URL加载项目信息
+		 */
 		getProjectFromUrl() {
-			//通过URL加载项目信息
 			if (this.fileUrl.trim() === '') {
 				return;
 			}
 			var tis = this;
+			var i18nTitle = this.$t('loadFailed');
+			var i18nTips = this.$t('loadFailedTips');
+			var i18nProxyFailed = this.$t('requestProxyFailed');
+			var i18nProxyFailedTips = this.$t('requestProxyFailedTips');
+
 			var urls = tis.fileUrl;
 			if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
 				urls = urls.substring(2);
@@ -511,8 +727,8 @@ export default {
 							tis.loadProject(JSON.parse(res.data.data));
 						} else {
 							tis.$notify.error({
-								title: '请求失败',
-								message: '代理请求项目信息失败,更多信息请查看控制台',
+								title: i18nProxyFailed,
+								message: i18nProxyFailedTips,
 								position: 'bottom-right'
 							});
 							console.log(res);
@@ -520,8 +736,8 @@ export default {
 					})
 					.catch(err => {
 						tis.$notify.error({
-							title: '请求失败',
-							message: '代理请求项目信息失败,更多信息请查看控制台',
+							title: i18nProxyFailed,
+							message: i18nProxyFailedTips,
 							position: 'bottom-right'
 						});
 						console.log(err);
@@ -535,39 +751,47 @@ export default {
 					})
 					.catch(err => {
 						tis.$notify.error({
-							title: '加载失败',
-							message: '加载项目信息失败,更多信息请查看控制台',
+							title: i18nTitle,
+							message: i18nTips,
 							position: 'bottom-right'
 						});
 						console.log(err);
 					});
 			}
 		},
+		/**
+		 * 通过本地文件加载项目信息
+		 */
 		getProjectFromFile() {
-			//通过本地文件加载项目信息
 			var reader = new FileReader();
 			var file = this.$refs.readFile.files[0];
 			reader.readAsText(file);
 			var tis = this;
+			var i18nTitle = this.$t('loadFailed');
+			var i18nTips = this.$t('loadFailedTips');
 			reader.onload = function(res) {
 				try {
 					tis.loadProject(JSON.parse(res.target.result));
 				} catch (err) {
 					tis.$notify.error({
-						title: '加载失败',
-						message: '加载项目信息失败,更多信息请查看控制台',
+						title: i18nTitle,
+						message: i18nTips,
 						position: 'bottom-right'
 					});
 					console.log(err);
 				}
 			};
 		},
+		/**
+		 * 加载项目信息
+		 *
+		 * @param {Object} data
+		 */
 		loadProject(data) {
 			if (data == null || '{}' == JSON.stringify(data)) {
 				return;
 			}
-			//加载项目信息
-			this.projectId=data.key;
+			this.projectId = data.key;
 			this.project.key = data.key;
 			this.project.name = data.name;
 			this.project.versions = data.versions;
@@ -583,9 +807,12 @@ export default {
 			this.project.externalDocs = data.externalDocs;
 			this.project.lastTime = data.lastTime;
 			this.apiGroups = data.content;
+
+			var i18nTips = this.$t('tips');
+			var i18nLoadSucceeded = this.$t('loadSucceeded');
 			this.$notify({
-				title: '提示',
-				message: '项目加载成功!',
+				title: i18nTips,
+				message: i18nLoadSucceeded,
 				type: 'success',
 				position: 'bottom-left',
 				duration: 1000
@@ -596,8 +823,13 @@ export default {
 			console.log('copy:data=' + data);
 			this.toCopy(data);
 		},
+		copyCustom() {
+			var data = this.requestUrl;
+			console.log('copy:data=' + data);
+			this.toCopy(data);
+		},
 		copyPath() {
-			var data = this.requestUrl.url.replace(this.project.host + (this.project.basePath || ''), '');
+			var data = this.requestUrl.replace(this.project.host + (this.project.basePath || ''), '');
 			console.log('copy-path:data=' + data);
 			this.toCopy(data);
 		},
@@ -607,22 +839,49 @@ export default {
 			document.body.appendChild(oInput);
 			oInput.select();
 			document.execCommand('Copy');
+			var i18nCopyed = this.$t('copySucceeded');
 			this.$notify({
-				title: '复制成功!',
+				title: i18nCopyed,
 				type: 'success',
 				position: 'bottom-right'
 			});
 			oInput.remove();
 		},
+		/**
+		 * 执行请求
+		 */
 		execute() {
+			//是否为自定义请求
+			var isCustomRequest = this.menuSubCurrent == 999999;
+
+			var isProxy = this.api.proxy;
 			var type = this.api.requestType;
 			var method = this.api.method;
-			var url = this.api.scheme + '://' + this.requestUrl;
-			var isProxy = this.api.proxy;
+
+			var url;
+			var params;
+			if (isCustomRequest) {
+				url = this.requestUrl;
+				params = this.customRequestParams || {};
+			} else {
+				url = this.api.scheme + '://' + this.requestUrl;
+				params = this.api.parameters || {};
+			}
+			if (url == '') {
+				var i18nRequestFailed = this.$t('requestFailed');
+				var i18nUrlCannotBeEmpty = this.$t('urlCannotBeEmpty');
+				this.$notify.error({
+					title: i18nRequestFailed,
+					message: i18nUrlCannotBeEmpty,
+					position: 'bottom-right'
+				});
+				return;
+			}
+
 			var header = null;
 			var query = null;
 			var body = null;
-			var params = this.api.parameters || {};
+
 			for (var i = 0; i < params.length; i++) {
 				if (params[i].join) {
 					if (params[i].value == null && params[i].in != 'path') {
@@ -720,7 +979,7 @@ export default {
 					tis.api.response = res.data;
 					tis.api.responseHeaders.status = res.status;
 					if (isProxy && header != null) {
-						tis.api.responseHeaders.tips = '使用代理自定义的header可能不显示,你可以打开控制台查看服务器返回的header';
+						tis.api.responseHeaders.tips = this.$t('responseHeaderTips');
 					} else {
 						delete tis.api.responseHeaders.tips;
 					}
@@ -738,7 +997,7 @@ export default {
 						tis.api.response = err.response.data;
 					} else {
 						var error = {};
-						error.tips = '更多信息请查看控制台!';
+						error.tips = tis.$t('moreInfoTips');
 						error.error = err;
 						tis.api.response = error;
 					}
