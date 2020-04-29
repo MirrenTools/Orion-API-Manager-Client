@@ -29,8 +29,8 @@
 				</li>
 			</ul>
 		</el-header>
-		<el-drawer :title="$t('projectList')" direction="btt" :visible.sync="drawer">
-			<div>
+		<el-drawer :title="$t('projectList')" direction="btt" :visible.sync="drawer" >
+			<div >
 				<p v-for="item in projects" :key="item.key">
 					<a :href="['./index.html?id=' + item.key]">{{ item.name }}</a>
 				</p>
@@ -1057,6 +1057,9 @@ export default {
 </script>
 <style>
 /* 修改框架样式 */
+.el-drawer.btt{
+	height: 50% !important;
+}
 .el-drawer__header {
 	margin-bottom: 0 !important;
 	text-align: center;
@@ -1069,6 +1072,7 @@ export default {
 	padding-bottom: 2px;
 	border-bottom: 2px solid #42b983;
 }
+
 .el-form-item {
 	margin-bottom: 0 !important;
 }
