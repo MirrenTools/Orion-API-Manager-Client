@@ -89,7 +89,7 @@
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('host') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20">{{ project.host }}</el-col>
+						<el-col :xs="24" :sm="18" :md="20"><input type="text" v-model="project.host" placeholder="host" /></el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.basePath">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
@@ -262,8 +262,16 @@
 											<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value"></el-input>
 										</template>
 									</el-table-column>
-									<el-table-column prop="description" :label="$t('paramsDescription')" min-width="150" show-overflow-tooltip></el-table-column>
-									<el-table-column prop="contains" :label="$t('paramsContains')" min-width="150" show-overflow-tooltip></el-table-column>
+									<el-table-column :label="$t('paramsDescription')" min-width="150">
+										<template slot-scope="scope">
+											<div v-html="scope.row.description"></div>
+										</template>
+									</el-table-column>
+									<el-table-column :label="$t('paramsContains')" min-width="150" >
+										<template slot-scope="scope">
+											<div v-html="scope.row.contains"></div>
+										</template>
+									</el-table-column>
 								</el-table>
 							</div>
 							<div>
@@ -337,10 +345,14 @@
 									<div style="display: flex;align-items: first baseline;">{{ item.msg }}&nbsp;</div>
 								</div>
 								<div class="plrrem05">
-									<el-table :data="item.data" row-key="description" border default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }">
+									<el-table :data="item.data" row-key="id" border default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }">
 										<el-table-column prop="type" :label="$t('paramsType')" width="200"></el-table-column>
 										<el-table-column prop="name" :label="$t('paramsName')" width="200"></el-table-column>
-										<el-table-column prop="description" :label="$t('paramsDescription')"></el-table-column>
+										<el-table-column :label="$t('paramsDescription')">
+											<template slot-scope="scope">
+												<div v-html="scope.row.description"></div>
+											</template>
+										</el-table-column>
 									</el-table>
 								</div>
 							</div>
@@ -619,7 +631,27 @@ export default {
 			if (api.version == null && api.responses != null) {
 				api.responses = [{ status: 200, data: data.responses }];
 			}
+			for (var i = 0; i < api.responses.length; i++) {
+				var ard = api.responses[i].data;
+				for (var j = 0; j < ard.length; j++) {
+					this.recursionResponseDataCreateId(ard[j]);
+				}
+			}
+
 			api.isSxecute = false;
+		},
+		/**
+		 * 递归响应的数据并给数据创建id
+		 * @param {Object} data
+		 */
+		recursionResponseDataCreateId(data) {
+			data.id = Math.random();
+			if (data.items == null) {
+				return data;
+			}
+			for (var i = 0; i < data.items.length; i++) {
+				this.recursionResponseDataCreateId(data.items[i]);
+			}
 		},
 		/**
 		 * 自定义请求测试
