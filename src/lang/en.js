@@ -9,7 +9,9 @@ export default {
 	projectNotLoaded: 'Project not loaded',
 	noApi: 'No API',
 	description: 'Description',
-	schemes: 'Scheme',
+	servers: 'Servers',
+	useThisServer:'Using this server',
+	addTemporaryServer:'Add temporary server',
 	host: 'Host',
 	basePath: 'Base path',
 	additionalDocument: 'Additional document',
@@ -67,5 +69,5 @@ export default {
 	copySucceeded: 'Copy successful',
 	urlCannotBeEmpty: 'URL cannot be empty',
 	responseHeaderTips: 'The header customized by the agent may not be displayed. You can open the browser console to view the header returned by the server',
-	moreInfoTips: 'See browser console for more information',
+	moreInfoTips: 'See browser console for more information'	
 }
