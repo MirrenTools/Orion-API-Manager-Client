@@ -73,7 +73,7 @@
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('description') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20">{{ project.description }}</el-col>
+						<el-col :xs="24" :sm="18" :md="20" v-html="project.description "></el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.servers">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
@@ -81,8 +81,8 @@
 						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">
 							<div v-for="(item,idx) in project.servers" :key="idx" style="margin-bottom: 5px;">
-								<div @click="selectServer=item.url" style="cursor: pointer;" :title="$t('useThisServer')">{{item.url}} <i class="el-icon-check"
-									 style="color: #42b983;" v-show="item.url==selectServer"></i></div>
+								<div @click="selectServer=item.url" style="cursor: pointer;" :title="$t('useThisServer')">{{item.url}} 
+								<i class="el-icon-check" style="color: #42b983;" v-show="item.url==selectServer"></i></div>
 								<div @click="selectServer=item.url" v-show="item.description" style="color: #888;cursor: pointer;">{{item.description}}</div>
 							</div>
 							<div style="display: flex;padding-top: 5px;">
@@ -100,7 +100,7 @@
 							<b>{{ $t('additionalDocument') }}</b>
 						</el-col>
 						<el-col :xs="24" :sm="18" :md="20">
-							{{ project.externalDocs.description }}
+							<div v-html="project.externalDocs.description"></div>
 							<br />
 							<a :href="project.externalDocs.url" style="color: #42b983;" target="_blank">{{ project.externalDocs.url }}</a>
 						</el-col>
@@ -115,7 +115,7 @@
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('contactsInfo') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20">{{ project.contactInfo }}</el-col>
+						<el-col :xs="24" :sm="18" :md="20" v-html="project.contactInfo"></el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.lastTime">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
@@ -382,7 +382,7 @@
 	import JsonViewer from 'vue-json-viewer';
 	import axios from 'axios';
 	// API服务器地址
-	const SERVER_HOST = 'http://localhost:8686';
+	const SERVER_HOST = process.env.VUE_APP_BASE_API;
 	export default {
 		components: {
 			JsonViewer
@@ -608,6 +608,8 @@
 							api.parameters[i].contains = contains;
 						}
 					}
+				}else{
+					api.parameters=[];
 				}
 				api.responses = data.responses;
 				if ((api.version == null && api.responses != null) || ((api.responses != null && api.responses.length > 0) && (api.responses[
@@ -619,6 +621,9 @@
 				}
 				for (var i = 0; i < api.responses.length; i++) {
 					var ard = api.responses[i].data;
+					if(ard==null){
+						ard=[];
+					}
 					for (var j = 0; j < ard.length; j++) {
 						this.recursionResponseDataCreateId(ard[j]);
 					}
