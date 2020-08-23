@@ -43,11 +43,11 @@
 					<li style="text-align: center;" v-show="!isMainShow">
 						<a @click="drawer = true">{{ $t('projectSwitch') }}</a>
 					</li>
-					<li v-show="projectId != null && project.name" @click="currentActive(-1, -1)" :class="{ current: menuCurrent == -1 && menuSubCurrent == -1 }">
+					<li v-show="project.isload && project.name" @click="currentActive(-1, -1)" :class="{ current: menuCurrent == -1 && menuSubCurrent == -1 }">
 						<span class="line">{{ project.name }}</span>
 					</li>
-					<div v-if="projectId == null" style="text-align: center;padding-top: 30px;">{{ $t('projectNotLoaded') }}</div>
-					<div v-if="projectId != null && !apiGroups" style="text-align: center;padding-top: 30px;">{{ $t('noApi') }}</div>
+					<div v-if="project.isload == null" style="text-align: center;padding-top: 30px;">{{ $t('projectNotLoaded') }}</div>
+					<div v-if="project.isload && !apiGroups" style="text-align: center;padding-top: 30px;">{{ $t('noApi') }}</div>
 					<li v-for="(group, gindex) in apiGroups" :key="group.groupId">
 						<span :class="{ current: menuCurrent == gindex }" @click="currentActive(gindex, -1)">
 							<span class="line">{{ group.name }}</span>
@@ -68,7 +68,7 @@
 			<!-- 中心栏 -->
 			<el-main id="main" v-show="isMainShow">
 				<!-- 项目信息 -->
-				<div v-show="menuCurrent == -1 && projectId != null">
+				<div v-show="menuCurrent == -1 && project.isload">
 					<el-row :gutter="15" class="mb10px" v-if="project.name">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('project') }}</b>
@@ -273,7 +273,9 @@
 								<div style="display: flex;">{{ $t('requestParams') }}</div>
 								<div style="display: flex;align-items: first baseline;">
 									{{ $t('requestType') }}&nbsp;
-									<el-select v-model="api.requestType" size="mini"><el-option v-for="(type, idx) in api.consumes" :key="idx" :label="type" :value="type"></el-option></el-select>
+									<el-select v-model="api.requestType" size="mini" filterable allow-create placeholder="回车创建">
+										<el-option v-for="(type, idx) in api.consumes" :key="idx" :label="type" :value="type"></el-option>
+									</el-select>
 								</div>
 							</div>
 							<div class="api-body-param-path plrrem05">
@@ -299,13 +301,17 @@
 											></el-checkbox>
 										</template>
 									</el-table-column>
-									<el-table-column prop="required" :label="$t('paramsRequired')" width="60"></el-table-column>
+									<el-table-column prop="required" :label="$t('paramsRequired')" width="60">
+										<template slot-scope="scope" v-if="scope.row.required != null">
+											{{ scope.row.required == true || scope.row.required == 'true' ? $t('theTrue') : $t('theFalse') }}
+										</template>
+									</el-table-column>
 									<el-table-column prop="in" :label="$t('paramsPosition')" width="100"></el-table-column>
 									<el-table-column prop="type" :label="$t('paramsType')" width="100"></el-table-column>
 									<el-table-column prop="name" :label="$t('paramsName')" min-width="100"></el-table-column>
 									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
 										<template slot-scope="scope">
-											<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value"></el-input>
+											<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
 										</template>
 									</el-table-column>
 									<el-table-column :label="$t('paramsDescription')" min-width="250">
@@ -316,7 +322,7 @@
 									</el-table-column>
 								</el-table>
 							</div>
-							<div>
+							<div style="padding:0 0.5rem;">
 								<!-- 自定义请求的参数 -->
 								<el-table
 									v-if="menuSubCurrent == 999999"
@@ -339,7 +345,7 @@
 									</el-table-column>
 									<el-table-column prop="in" :label="$t('paramsPosition')" min-width="120">
 										<template slot-scope="scope">
-											<el-select v-model="scope.row.in">
+											<el-select v-model="scope.row.in" @change="paramsBlurHandler(scope.row)">
 												<el-option value="query">query</el-option>
 												<el-option value="path">path</el-option>
 												<el-option value="header">header</el-option>
@@ -364,17 +370,20 @@
 									</el-table-column>
 									<el-table-column prop="name" :label="$t('paramsName')" min-width="200">
 										<template slot-scope="scope">
-											<el-input :placeholder="$t('inputParamsName')" v-model="scope.row.name"></el-input>
+											<el-input :placeholder="$t('inputParamsName')" v-model="scope.row.name" @blur="paramsBlurHandler(scope.row)"></el-input>
 										</template>
 									</el-table-column>
 									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
 										<template slot-scope="scope">
-											<el-input :placeholder="$t('inputParamsValue')" v-model="scope.row.value"></el-input>
+											<el-input :placeholder="$t('inputParamsValue')" v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
 										</template>
 									</el-table-column>
 								</el-table>
-								<div v-if="menuSubCurrent == 999999" style="text-align: center;background-color: #FFF;line-height: 60px;">
+								<div v-if="menuSubCurrent == 999999" style="text-align: center;background-color: #FFF;line-height: 50px;padding: 0.5rem;">
 									<el-button type="primary" size="small" @click="addCustomRequestParams">{{ $t('addRequestParams') }}</el-button>
+								</div>
+								<div style="padding-top: 0.5rem;">
+									<el-input v-model="api.body" type="textarea" :autosize="{ minRows: 2, maxRows: 10 }" :placeholder="$t('requestBody')"></el-input>
 								</div>
 							</div>
 						</div>
@@ -447,6 +456,7 @@
 
 <script>
 import { getParams } from './utils/URLParams.js';
+import swaggerConvert from './utils/ConvertSwaggerDocs.js';
 import JsonViewer from 'vue-json-viewer';
 import axios from 'axios';
 import qs from 'qs';
@@ -486,7 +496,7 @@ export default {
 			customServer: '',
 			//请求后台的URL
 			requestUrl: '',
-			//请求后台的参数
+			//自定义请求后台的参数
 			customRequestParams: [],
 			// 项目列表
 			projects: [],
@@ -603,6 +613,23 @@ export default {
 				document.getElementById(id).classList.remove('is-checked');
 				document.getElementById(id).children[0].classList.remove('is-checked');
 			}
+		},
+		/**
+		 * 请求参数离开后的事件
+		 * @param {Object} data
+		 */
+		paramsBlurHandler(data) {
+			if(data.name==''||data.value==''){
+				return;
+			}
+			if(data.in!='body'){
+				return;
+			}
+			var body= this.api.body;
+			if(body==null||body==''){
+				return;
+			}
+			this.api.body=body.replace(new RegExp('{'+data.name+'}','g'),data.value);
 		},
 		/**
 		 * 显示侧边栏
@@ -752,10 +779,7 @@ export default {
 				api.parameters = [];
 			}
 			api.responses = data.responses;
-			if (
-				(api.version == null && api.responses != null) ||
-				(api.responses != null && api.responses.length > 0 && (api.responses[0].status == null || api.responses[0].data == null))
-			) {
+			if (api.responses != null && api.responses.length > 0 && (api.responses[0].status == null || api.responses[0].data == null)) {
 				api.responses = [
 					{
 						status: 200,
@@ -803,6 +827,7 @@ export default {
 				requestType: 'x-www-form-urlencoded',
 				consumes: ['x-www-form-urlencoded', 'application/json', 'multipart/form-data', 'application/xml'],
 				parameters: null,
+				body: null,
 				responses: null,
 				proxy: false,
 				responseTags: 'format',
@@ -880,7 +905,7 @@ export default {
 				.then(res => {
 					var data = res.data;
 					console.log(data);
-					tis.loadProject(data);
+					tis.loadDocument(data);
 				})
 				.catch(err => {
 					tis.$notify.error({
@@ -911,7 +936,7 @@ export default {
 					.get(SERVER_HOST + '/proxy/project?url=' + urls)
 					.then(res => {
 						if (res.data.code == 200) {
-							tis.loadProject(JSON.parse(res.data.data));
+							tis.loadDocument(JSON.parse(res.data.data));
 						} else {
 							tis.$notify.error({
 								title: i18nProxyFailed,
@@ -934,7 +959,7 @@ export default {
 					.get(tis.fileUrl)
 					.then(res => {
 						var data = res.data;
-						tis.loadProject(data);
+						tis.loadDocument(data);
 					})
 					.catch(err => {
 						tis.$notify.error({
@@ -958,7 +983,7 @@ export default {
 			var i18nTips = this.$t('loadFailedTips');
 			reader.onload = function(res) {
 				try {
-					tis.loadProject(JSON.parse(res.target.result));
+					tis.loadDocument(JSON.parse(res.target.result));
 				} catch (err) {
 					tis.$notify.error({
 						title: i18nTitle,
@@ -968,6 +993,45 @@ export default {
 					console.log(err);
 				}
 			};
+		},
+		/**
+		 * 加载接口文档
+		 * @param {Object} data
+		 */
+		loadDocument(data) {
+			if (data == null) {
+				return;
+			}
+			console.log(data);
+			//获取数据版本
+			var orion = data.orionApi;
+			var openapi = data.openapi;
+			var swagger = data.swagger;
+			try {
+				if (openapi != null && openapi.startsWith('3.')) {
+					var orionData = swaggerConvert(data);
+					if (orionData == null) {
+						this.$message.error('加载项目,该文档无效或无法识别!');
+						return;
+					}
+					console.log('load Open API:');
+					this.loadProject(orionData);
+				} else if (swagger != null && swagger.startsWith('2.')) {
+					var orionData = swaggerConvert(data);
+					if (orionData == null) {
+						this.$message.error('加载项目,该文档无效或无法识别!');
+						return;
+					}
+					console.log('load Swagger:');
+					this.loadProject(orionData);
+				} else {
+					this.loadProject(data);
+				}
+			} catch (err) {
+				this.projectLoading = false;
+				this.$message.error('加载项目信息失败,更多信息请查看控制台!');
+				console.log(err);
+			}
 		},
 		/**
 		 * 加载项目信息
@@ -987,7 +1051,7 @@ export default {
 					console.log(err);
 				}
 			}
-
+			this.project.isload = true;
 			this.project.key = data.key;
 			this.project.name = data.name;
 			this.project.versions = data.versions;
@@ -1073,7 +1137,7 @@ export default {
 				url = this.requestUrl;
 				params = this.customRequestParams || {};
 			} else {
-				url = this.api.scheme + '://' + this.requestUrl;
+				url = this.requestUrl;
 				params = this.api.parameters || {};
 			}
 			if (url == '') {
@@ -1086,11 +1150,9 @@ export default {
 				});
 				return;
 			}
-
 			var header = null;
 			var query = null;
 			var body = null;
-
 			for (var i = 0; i < params.length; i++) {
 				if (params[i].join) {
 					if (params[i].value == null && params[i].in != 'path') {
@@ -1157,7 +1219,10 @@ export default {
 			if (query != null) {
 				requestData.params = query;
 			}
-
+			//请求的主体不为空则覆盖body
+			if (this.api.body != null && this.api.body.trim() != '') {
+				body = this.api.body.trim();
+			}
 			var contentType = null;
 			//设置body参数
 			if (body != null) {
@@ -1175,6 +1240,9 @@ export default {
 					requestData.data = formData;
 					contentType = 'multipart/form-data';
 				} else {
+					if (type != null && type != '') {
+						contentType = type;
+					}
 					requestData.data = body;
 				}
 			}
@@ -1203,14 +1271,18 @@ export default {
 					for (var key in res.headers) {
 						tis.api.responseHeaders[key] = res.headers[key];
 					}
-
 					console.log('request result:');
 					console.log(res);
 				})
 				.catch(err => {
 					tis.api.isSxecute = true;
 					tis.api.executing = false;
-					if (err.response != null && err.response.status == 502) {
+					if(err.headers){
+						for (var key in err.headers) {
+							tis.api.responseHeaders[key] = err.headers[key];
+						}
+					}
+					if (err.response != null && err.response.data != null) {
 						tis.api.response = err.response.data;
 					} else {
 						var error = {};
