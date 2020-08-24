@@ -78,13 +78,13 @@
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('description') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20" v-html="project.description"  class="body-max-width"></el-col>
+						<el-col :xs="24" :sm="18" :md="20" v-html="project.description" class="body-max-width"></el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.servers">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('servers') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20"  class="body-max-width">
+						<el-col :xs="24" :sm="18" :md="20" class="body-max-width">
 							<div v-for="(item, idx) in project.servers" :key="idx" style="margin-bottom: 5px;">
 								<div @click="selectServer = item.url" style="cursor: pointer;" :title="$t('useThisServer')">
 									{{ item.url }}
@@ -106,7 +106,7 @@
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('additionalDocument') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20"  class="body-max-width">
+						<el-col :xs="24" :sm="18" :md="20" class="body-max-width">
 							<div v-html="project.externalDocs.description"></div>
 							<br />
 							<a :href="project.externalDocs.url" style="color: #409EFF;" target="_blank">{{ project.externalDocs.url }}</a>
@@ -116,63 +116,63 @@
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('contacts') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20"  class="body-max-width">{{ project.contactName }}</el-col>
+						<el-col :xs="24" :sm="18" :md="20" class="body-max-width">{{ project.contactName }}</el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.contactInfo">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('contactsInfo') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20" v-html="project.contactInfo"  class="body-max-width"></el-col>
+						<el-col :xs="24" :sm="18" :md="20" v-html="project.contactInfo" class="body-max-width"></el-col>
 					</el-row>
 					<el-row :gutter="15" class="mb10px" v-if="project.lastTime">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth">
 							<b>{{ $t('datetime') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20"  class="body-max-width">{{ project.lastTime }}</el-col>
+						<el-col :xs="24" :sm="18" :md="20" class="body-max-width">{{ project.lastTime }}</el-col>
 					</el-row>
 					<!-- 参数变量定义 -->
-					<el-row :gutter="15" class="mb10px" >
+					<el-row :gutter="15" class="mb10px">
 						<el-col :xs="24" :sm="6" :md="4" class="xs-left-sm-rigth" style="line-height: 35px;">
 							<b>{{ $t('parameterVariable') }}</b>
 						</el-col>
-						<el-col :xs="24" :sm="18" :md="20"  class="body-max-width">
-								<el-table :data="parameterVariables" border v-show="parameterVariables != null && parameterVariables.length > 0"
-								 style="margin-bottom: 10px;">
-									<el-table-column prop="in" :label="$t('paramsPosition')" width="150">
-										<template slot-scope="scope">
-											<el-select v-model="scope.row.in" :placeholder="$t('choose')">
-												<el-option value="query">query</el-option>
-												<el-option value="body">body</el-option>
-												<el-option value="path">path</el-option>
-												<el-option value="header">header</el-option>
-											</el-select>
-										</template>
-									</el-table-column>
-									<el-table-column prop="name" :label="$t('paramsName')" width="250">
-										<template slot-scope="scope">
-											<el-input v-model="scope.row.name" :placeholder="$t('inputParamsName')"></el-input>
-										</template>
-									</el-table-column>
-									<el-table-column prop="value" :label="$t('paramsValue')">
-										<template slot-scope="scope">
-											<el-input v-model="scope.row.value" :placeholder="$t('inputParamsValue')"></el-input>
-										</template>
-									</el-table-column>
-									<el-table-column :label="$t('operation')" width="100">
-										<template slot-scope="scope">
-											<el-button size="mini" type="danger" @click="removeParamterVariable(scope.$index)">{{ $t('remove') }}</el-button>
-										</template>
-									</el-table-column>
-								</el-table>
-								<div style="display: flex;align-items: center;">
-									<div style="color: #666;">{{ $t('parameterVariableTips') }}</div>
-									<div style="margin-left: auto;">
-										<el-button size="medium" type="primary" @click="saveParamterVariable()" v-show="parameterVariables != null && parameterVariables.length > 0">
-											{{ $t('save') }}
-										</el-button>
-										<el-button size="medium" @click="addParamterVariable()">{{ $t('add') }}</el-button>
-									</div>
+						<el-col :xs="24" :sm="18" :md="20" class="body-max-width">
+							<el-table :data="parameterVariables" border v-show="parameterVariables != null && parameterVariables.length > 0"
+							 style="margin-bottom: 10px;">
+								<el-table-column prop="in" :label="$t('paramsPosition')" width="150">
+									<template slot-scope="scope">
+										<el-select v-model="scope.row.in" :placeholder="$t('choose')">
+											<el-option value="query">query</el-option>
+											<el-option value="body">body</el-option>
+											<el-option value="path">path</el-option>
+											<el-option value="header">header</el-option>
+										</el-select>
+									</template>
+								</el-table-column>
+								<el-table-column prop="name" :label="$t('paramsName')" width="250">
+									<template slot-scope="scope">
+										<el-input v-model="scope.row.name" :placeholder="$t('inputParamsName')"></el-input>
+									</template>
+								</el-table-column>
+								<el-table-column prop="value" :label="$t('paramsValue')">
+									<template slot-scope="scope">
+										<el-input v-model="scope.row.value" :placeholder="$t('inputParamsValue')"></el-input>
+									</template>
+								</el-table-column>
+								<el-table-column :label="$t('operation')" width="100">
+									<template slot-scope="scope">
+										<el-button size="mini" type="danger" @click="removeParamterVariable(scope.$index)">{{ $t('remove') }}</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+							<div style="display: flex;align-items: center;">
+								<div style="color: #666;">{{ $t('parameterVariableTips') }}</div>
+								<div style="margin-left: auto;">
+									<el-button size="medium" type="primary" @click="saveParamterVariable()" v-show="parameterVariables != null && parameterVariables.length > 0">
+										{{ $t('save') }}
+									</el-button>
+									<el-button size="medium" @click="addParamterVariable()">{{ $t('add') }}</el-button>
 								</div>
+							</div>
 						</el-col>
 					</el-row>
 				</div>
@@ -1204,26 +1204,40 @@
 				if (query != null) {
 					requestData.params = query;
 				}
+				var useBody = true;
 				//请求的主体不为空则覆盖body
 				if (this.api.body != null && this.api.body.trim() != '') {
 					body = this.api.body.trim();
+					useBody = false;
 				}
 				var contentType = null;
 				//设置body参数
 				if (body != null) {
 					if (type.indexOf('xml') != -1) {
 						contentType = 'application/xml';
-						requestData.data = xmlBuilder.buildObject(body);
+						if (useBody) {
+							requestData.data = xmlBuilder.buildObject(body);
+						} else {
+							requestData.data = body;
+						}
 					} else if (type.indexOf('urlencoded') != -1) {
 						contentType = 'application/x-www-form-urlencoded';
-						requestData.data = qs.stringify(body);
+						if (useBody) {
+							requestData.data = qs.stringify(body);
+						} else {
+							requestData.data = body;
+						}
 					} else if (type.indexOf('form-data') != -1) {
-						var formData = new FormData();
-						Object.keys(body).forEach(key => {
-							formData.append(key, body[key]);
-						});
-						requestData.data = formData;
 						contentType = 'multipart/form-data';
+						if (useBody) {
+							var formData = new FormData();
+							Object.keys(body).forEach(key => {
+								formData.append(key, body[key]);
+							});
+							requestData.data = formData;
+						} else {
+							requestData.data = body;
+						}
 					} else {
 						if (type != null && type != '') {
 							contentType = type;
@@ -1231,6 +1245,7 @@
 						requestData.data = body;
 					}
 				}
+
 				if (contentType != null) {
 					if (requestData.headers == null) {
 						requestData.headers = {};
@@ -1341,9 +1356,11 @@
 	img {
 		border: none;
 	}
-	.body-max-width{
+
+	.body-max-width {
 		max-width: 1240px;
 	}
+
 	.xs-left-sm-rigth {
 		text-align: right;
 	}
