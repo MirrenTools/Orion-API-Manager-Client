@@ -691,7 +691,7 @@
 				}
 				api.parameters = data.parameters;
 				api.version = data.version; //新版API还是旧版api,没有version代表旧版的api
-				//国际化字符串
+				//国际化字符
 				var i18nDef = this.$t('defaults');
 				var i18nEnum = this.$t('enums');
 				var i18nMin = this.$t('min');
@@ -704,7 +704,7 @@
 					for (var i = 0; i < api.parameters.length; i++) {
 						var param = api.parameters[i];
 						this.recursionResponseDataCreateId(param);
-						param.join = param.required == 'true';
+						param.join =( param.required == true||param.required == 'true');
 						var val = variables[param.in + '-' + param.name];
 						if (val != null) {
 							param.value = val;
