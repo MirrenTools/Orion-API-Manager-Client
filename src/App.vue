@@ -53,8 +53,12 @@
 							<span class="line">{{ group.name }}</span>
 						</span>
 						<ul v-if="group.apis" class="menu-sub">
-							<li v-for="(api, aindex) in group.apis" :key="api.apiId" :class="{ current: menuCurrent == gindex && menuSubCurrent == aindex }"
-							 @click="currentActive(gindex, aindex)">
+							<li
+								v-for="(api, aindex) in group.apis"
+								:key="api.apiId"
+								:class="{ current: menuCurrent == gindex && menuSubCurrent == aindex }"
+								@click="currentActive(gindex, aindex)"
+							>
 								<span class="line-min">{{ api.title }}</span>
 							</li>
 						</ul>
@@ -93,11 +97,9 @@
 								<div @click="selectServer = item.url" v-show="item.description" style="color: #888;cursor: pointer;">{{ item.description }}</div>
 							</div>
 							<div style="display: flex;padding-top: 5px;">
-								<div style="width: 95%;">
-									<el-input v-model="customServer" :placeholder="$t('addTemporaryServer')" size="medium"></el-input>
-								</div>
+								<div style="width: 95%;"><el-input v-model="customServer" :placeholder="$t('addTemporaryServer')" size="medium"></el-input></div>
 								<div style="margin-left: 5px;">
-									<el-button size="medium" @click="addCustomServer()">添加</el-button>
+									<el-button size="medium" @click="addCustomServer()">{{ $t('add') }}</el-button>
 								</div>
 							</div>
 						</el-col>
@@ -136,8 +138,7 @@
 							<b>{{ $t('parameterVariable') }}</b>
 						</el-col>
 						<el-col :xs="24" :sm="18" :md="20" class="body-max-width">
-							<el-table :data="parameterVariables" border v-show="parameterVariables != null && parameterVariables.length > 0"
-							 style="margin-bottom: 10px;">
+							<el-table :data="parameterVariables" border v-show="parameterVariables != null && parameterVariables.length > 0" style="margin-bottom: 10px;">
 								<el-table-column prop="in" :label="$t('paramsPosition')" width="150">
 									<template slot-scope="scope">
 										<el-select v-model="scope.row.in" :placeholder="$t('choose')">
@@ -279,13 +280,25 @@
 							</div>
 							<div class="api-body-param-path plrrem05">
 								<!-- 默认请求的参数 -->
-								<el-table v-if="api.parameters && api.parameters.length > 0" ref="requestParamsTable" :data="api.parameters"
-								 row-key="tableRowkey" default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }"
-								 tooltip-effect="dark" style="width: 100%" :empty-text="$t('requestParamsEnpty')">
+								<el-table
+									v-if="api.parameters && api.parameters.length > 0"
+									ref="requestParamsTable"
+									:data="api.parameters"
+									row-key="tableRowkey"
+									default-expand-all
+									:tree-props="{ children: 'items', hasChildren: 'hasChildren' }"
+									tooltip-effect="dark"
+									style="width: 100%"
+									:empty-text="$t('requestParamsEnpty')"
+								>
 									<el-table-column prop="join" :label="$t('paramsJoin')" width="50" align="center">
 										<template slot-scope="scope">
-											<el-checkbox v-if="scope.row.join != null" v-model="scope.row.join" :id="'api-parameters-join-' + scope.$index"
-											 @click.native.prevent="changeCheckBoxSelect('api-parameters-join-' + scope.$index, scope.row)"></el-checkbox>
+											<el-checkbox
+												v-if="scope.row.join != null"
+												v-model="scope.row.join"
+												:id="'api-parameters-join-' + scope.$index"
+												@click.native.prevent="changeCheckBoxSelect('api-parameters-join-' + scope.$index, scope.row)"
+											></el-checkbox>
 										</template>
 									</el-table-column>
 									<el-table-column prop="required" :label="$t('paramsRequired')" width="60">
@@ -298,8 +311,7 @@
 									<el-table-column prop="name" :label="$t('paramsName')" min-width="100"></el-table-column>
 									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
 										<template slot-scope="scope">
-											<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value"
-											 @blur="paramsBlurHandler(scope.row)"></el-input>
+											<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
 										</template>
 									</el-table-column>
 									<el-table-column :label="$t('paramsDescription')" min-width="250">
@@ -312,12 +324,23 @@
 							</div>
 							<div style="padding:0 0.5rem;">
 								<!-- 自定义请求的参数 -->
-								<el-table v-if="menuSubCurrent == 999999" ref="customRequestParamsTable" :data="customRequestParams" row-key="tableRowkey"
-								 tooltip-effect="dark" style="width: 100%" :empty-text="$t('requestParamsEnpty')">
+								<el-table
+									v-if="menuSubCurrent == 999999"
+									ref="customRequestParamsTable"
+									:data="customRequestParams"
+									row-key="tableRowkey"
+									tooltip-effect="dark"
+									style="width: 100%"
+									:empty-text="$t('requestParamsEnpty')"
+								>
 									<el-table-column prop="join" :label="$t('paramsJoin')" width="50" align="center">
 										<template slot-scope="scope">
-											<el-checkbox v-if="scope.row.join != null" v-model="scope.row.join" :id="'custom-parameters-join-' + scope.$index"
-											 @click.native.prevent="changeCheckBoxSelect('custom-parameters-join-' + scope.$index, scope.row)"></el-checkbox>
+											<el-checkbox
+												v-if="scope.row.join != null"
+												v-model="scope.row.join"
+												:id="'custom-parameters-join-' + scope.$index"
+												@click.native.prevent="changeCheckBoxSelect('custom-parameters-join-' + scope.$index, scope.row)"
+											></el-checkbox>
 										</template>
 									</el-table-column>
 									<el-table-column prop="in" :label="$t('paramsPosition')" min-width="120">
@@ -372,9 +395,7 @@
 									<div style="display: flex;align-items: first baseline;">{{ item.msg }}&nbsp;</div>
 								</div>
 								<div class="plrrem05">
-									<div v-if="item.schema" style="border: 1px solid #EBEEF5;">
-										<json-viewer :expand-depth="10" :value="item.schema" />
-									</div>
+									<div v-if="item.schema" style="border: 1px solid #EBEEF5;"><json-viewer :expand-depth="10" :value="item.schema" /></div>
 									<div v-show="item.data && item.data.length > 0">
 										<el-table :data="item.data" row-key="tableRowkey" border default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }">
 											<el-table-column prop="type" :label="$t('paramsType')" width="200"></el-table-column>
@@ -406,9 +427,7 @@
 						<!-- 执行结果的内容 -->
 						<div class="api-body-response-body" v-show="api.isSxecute">
 							<el-tabs style="width: 100%;" v-model="api.responseTags">
-								<el-tab-pane :label="$t('beautifyData')" name="format">
-									<json-viewer :expand-depth="10" :value="api.response" />
-								</el-tab-pane>
+								<el-tab-pane :label="$t('beautifyData')" name="format"><json-viewer :expand-depth="10" :value="api.response" /></el-tab-pane>
 								<el-tab-pane :label="$t('originalData')" name="original">
 									<pre><code>{{api.response}}</code></pre>
 								</el-tab-pane>
@@ -436,460 +455,510 @@
 </template>
 
 <script>
-	import {
-		getParams
-	} from './utils/URLParams.js';
-	import swaggerConvert from './utils/ConvertSwaggerDocs.js';
-	import JsonViewer from 'vue-json-viewer';
-	import axios from 'axios';
-	import qs from 'qs';
-	// API服务器地址
-	const SERVER_HOST = process.env.VUE_APP_BASE_API;
-	// xml与json转换器
-	const xml2js = require('xml2js');
-	//xml2js.parseString(xml,function(err, result))将xml转换为json对象
-	//xmlBuilder.buildObject(obj)将对象转换为xml
-	const xmlBuilder = new xml2js.Builder();
+import { getParams } from './utils/URLParams.js';
+import swaggerConvert from './utils/ConvertSwaggerDocs.js';
+import JsonViewer from 'vue-json-viewer';
+import axios from 'axios';
+import qs from 'qs';
+// API服务器地址
+const SERVER_HOST = process.env.VUE_APP_BASE_API;
+// xml与json转换器
+const xml2js = require('xml2js');
+//xml2js.parseString(xml,function(err, result))将xml转换为json对象
+//xmlBuilder.buildObject(obj)将对象转换为xml
+const xmlBuilder = new xml2js.Builder();
 
-	export default {
-		components: {
-			JsonViewer
+export default {
+	components: {
+		JsonViewer
+	},
+	data() {
+		return {
+			//是否显示侧边栏
+			isAsideShow: true,
+			//是否显示内容
+			isMainShow: true,
+			//是否显示项目列表弹窗
+			drawer: false,
+			//当前选择的分组
+			menuCurrent: -1,
+			// 当前选择的API
+			menuSubCurrent: -1,
+			//文档的URL路径
+			fileUrl: '',
+			//项目的id
+			projectId: null,
+			//已选择的主机地址
+			selectServer: '',
+			//参数变量
+			parameterVariables: [],
+			//自定义主机地址
+			customServer: '',
+			//请求后台的URL
+			requestUrl: '',
+			//自定义请求后台的参数
+			customRequestParams: [],
+			// 项目列表
+			projects: [],
+			//项目的API分组
+			apiGroups: [],
+			//API分组中的API集合
+			apis: [],
+			//当前使用的项目
+			project: {},
+			//当前使用的API分组
+			group: {},
+			//当前使用的API
+			api: {
+				// method: '接口的请求方法',
+				// methodUpperCase: '接口的请求方法,大写',
+				// scheme: '当前选中的协议类型',
+				// url: '接口路径host+basePath+path',
+				// title: '接口的名称',
+				// description: '接口的描述',
+				// 附加说明
+				// additional:[{title:'附加说明的标题',description:'附加说明的详情'}],
+				// 附加文档
+				// externalDocs: { url: '连接', description: '描述' },
+				//请求的content-type类型
+				requestType: 'x-www-form-urlencoded',
+				//请求的参数
+				//--join: 是否选择,
+				//--required: 是否必填,
+				//--in: 在哪个位置,
+				//--type: 数据类型,
+				//--name: 参数名称,
+				//--contains: 参数约束,
+				//--description: 参数描述,
+				//--value: 参数值
+				parameters: null,
+				//响应结果显示
+				//--status: 状态码
+				//--msg: 描述信息
+				//--data: 接口数据
+				//----name 名称
+				//----description 描述
+				//----type 类型
+				//----children... 子参数
+				responses: null,
+				//是否使用代理
+				proxy: false,
+				//请求结果的切换标签
+				responseTags: 'format',
+				//请求头信息
+				requestHenders: {},
+				//响应头信息
+				responseHeaders: {},
+				//执行请求返回的原始结果
+				response: {},
+				//是否已经执行了请求
+				isSxecute: false,
+				//是否正在请求中
+				executing: false
+			}
+		};
+	},
+	methods: {
+		/**
+		 * 添加变量
+		 */
+		addParamterVariable() {
+			this.parameterVariables.push({ in: 'query', name: '', value: '' });
 		},
-		data() {
-			return {
-				//是否显示侧边栏
-				isAsideShow: true,
-				//是否显示内容
-				isMainShow: true,
-				//是否显示项目列表弹窗
-				drawer: false,
-				//当前选择的分组
-				menuCurrent: -1,
-				// 当前选择的API
-				menuSubCurrent: -1,
-				//文档的URL路径
-				fileUrl: '',
-				//项目的id
-				projectId: null,
-				//已选择的主机地址
-				selectServer: '',
-				//参数变量
-				parameterVariables: [],
-				//自定义主机地址
-				customServer: '',
-				//请求后台的URL
-				requestUrl: '',
-				//自定义请求后台的参数
-				customRequestParams: [],
-				// 项目列表
-				projects: [],
-				//项目的API分组
-				apiGroups: [],
-				//API分组中的API集合
-				apis: [],
-				//当前使用的项目
-				project: {},
-				//当前使用的API分组
-				group: {},
-				//当前使用的API
-				api: {
-					// method: '接口的请求方法',
-					// methodUpperCase: '接口的请求方法,大写',
-					// scheme: '当前选中的协议类型',
-					// url: '接口路径host+basePath+path',
-					// title: '接口的名称',
-					// description: '接口的描述',
-					// 附加说明
-					// additional:[{title:'附加说明的标题',description:'附加说明的详情'}],
-					// 附加文档
-					// externalDocs: { url: '连接', description: '描述' },
-					//请求的content-type类型
-					requestType: 'x-www-form-urlencoded',
-					//请求的参数
-					//--join: 是否选择,
-					//--required: 是否必填,
-					//--in: 在哪个位置,
-					//--type: 数据类型,
-					//--name: 参数名称,
-					//--contains: 参数约束,
-					//--description: 参数描述,
-					//--value: 参数值
-					parameters: null,
-					//响应结果显示
-					//--status: 状态码
-					//--msg: 描述信息
-					//--data: 接口数据
-					//----name 名称
-					//----description 描述
-					//----type 类型
-					//----children... 子参数
-					responses: null,
-					//是否使用代理
-					proxy: false,
-					//请求结果的切换标签
-					responseTags: 'format',
-					//请求头信息
-					requestHenders: {},
-					//响应头信息
-					responseHeaders: {},
-					//执行请求返回的原始结果
-					response: {},
-					//是否已经执行了请求
-					isSxecute: false,
-					//是否正在请求中
-					executing: false
-				}
-			};
+		/**
+		 * 删除参数变量
+		 * @param {Object} index
+		 */
+		removeParamterVariable(index) {
+			this.$confirm(this.$t('removeTips'), this.$t('tips'), {
+				confirmButtonText: this.$t('confirm'),
+				cancelButtonText: this.$t('cancel'),
+				type: 'warning'
+			})
+				.then(() => {
+					this.parameterVariables.splice(index, 1);
+					this.saveParamterVariable();
+				})
+				.catch(() => {});
 		},
-		methods: {
-			/**
-			 * 添加变量
-			 */
-			addParamterVariable() {
-				this.parameterVariables.push({ in: 'query',
-					name: '',
-					value: ''
-				});
-			},
-			/**
-			 * 删除参数变量
-			 * @param {Object} index
-			 */
-			removeParamterVariable(index) {
-				this.$confirm(this.$t('removeTips'), this.$t('tips'), {
-						confirmButtonText: this.$t('confirm'),
-						cancelButtonText: this.$t('cancel'),
-						type: 'warning'
-					})
-					.then(() => {
-						this.parameterVariables.splice(index, 1);
-						this.saveParamterVariable();
-					})
-					.catch(() => {});
-			},
-			/**
-			 * 保存变量
-			 */
-			saveParamterVariable() {
-				if (this.projectId == '') {
-					return;
+		/**
+		 * 保存变量
+		 */
+		saveParamterVariable() {
+			if (this.projectId == '') {
+				return;
+			}
+			var pvs = [];
+			for (var i = 0; i < this.parameterVariables.length; i++) {
+				var pv = this.parameterVariables[i];
+				if (pv.name == '' || pv.value == '') {
+					continue;
 				}
-				var pvs = [];
-				for (var i = 0; i < this.parameterVariables.length; i++) {
-					var pv = this.parameterVariables[i];
-					if (pv.name == '' || pv.value == '') {
-						continue;
+				pvs.push(pv);
+			}
+			localStorage.setItem(this.projectId, JSON.stringify(pvs));
+			this.$message.success(this.$t('completed'));
+		},
+		/**
+		 * 修改请求参数是否选中的显示状态
+		 * @param {Integer} id
+		 * @param {Integer} row
+		 */
+		changeCheckBoxSelect(id, row) {
+			row.join = !row.join;
+			if (row.join) {
+				document.getElementById(id).classList.add('is-checked');
+				document.getElementById(id).children[0].classList.add('is-checked');
+			} else {
+				document.getElementById(id).classList.remove('is-checked');
+				document.getElementById(id).children[0].classList.remove('is-checked');
+			}
+		},
+		/**
+		 * 请求参数离开后的事件
+		 * @param {Object} data
+		 */
+		paramsBlurHandler(data) {
+			if (data.name == '' || data.value == '') {
+				return;
+			}
+			if (data.in != 'body') {
+				return;
+			}
+			var body = this.api.body;
+			if (body == null || body == '') {
+				return;
+			}
+			this.api.body = body.replace(new RegExp('{' + data.name + '}', 'g'), data.value);
+		},
+		/**
+		 * 显示侧边栏
+		 */
+		showAside() {
+			if (this.isAsideShow === false) {
+				this.isAsideShow = true;
+				this.isMainShow = false;
+			} else {
+				this.isAsideShow = false;
+				this.isMainShow = true;
+			}
+		},
+		/**
+		 * 关闭侧边栏
+		 */
+		closeAside() {
+			if (this.isAsideShow === false) {
+				this.isAsideShow = true;
+				this.isMainShow = false;
+			} else {
+				this.isAsideShow = false;
+				this.isMainShow = true;
+			}
+		},
+		/**
+		 * 激活当前选中
+		 * @param {Integer} parent
+		 * @param {Integer} sub
+		 */
+		currentActive(parent, sub) {
+			this.menuCurrent = parent;
+			this.menuSubCurrent = sub;
+			//如果是小屏幕就控制是否显示侧边栏
+			if (this.isMainShow === false) {
+				this.isMainShow = true;
+				this.isAsideShow = false;
+			}
+			// -1代表选中项目信息
+			if (parent == -1 && sub == -1) {
+				return;
+			}
+			this.group = this.apiGroups[parent];
+			var data = this.group.apis[sub];
+			if (data == null) {
+				return;
+			}
+			//初始化请求参数变量
+			var variables = {};
+			for (var i = 0; i < this.parameterVariables.length; i++) {
+				var pv = this.parameterVariables[i];
+				variables[pv.in + '-' + pv.name] = pv.value;
+				if (pv.in == 'path') {
+					data.path = data.path.replace('{' + pv.name + '}', pv.value);
+					data.path = data.path.replace('/:' + pv.name, '/' + pv.value);
+				}
+			}
+
+			this.requestUrl = '';
+			this.customRequestParams = null;
+			var api = this.api;
+			api.title = data.title;
+			api.deprecated = data.deprecated;
+			api.method = data.method;
+			api.methodUpperCase = data.method.toUpperCase();
+
+			api.description = data.description;
+			api.additional = data.additional;
+			api.externalDocs = data.externalDocs;
+			api.consumes = data.consumes;
+			if (api.consumes != null && api.consumes.length > 0) {
+				api.requestType = api.consumes[0];
+			}
+			api.parameters = data.parameters;
+			api.version = data.version; //新版API还是旧版api,没有version代表旧版的api
+			//国际化字符
+			var i18nDef = this.$t('defaults');
+			var i18nEnum = this.$t('enums');
+			var i18nMin = this.$t('min');
+			var i18nMax = this.$t('max');
+			var i18nMinLength = this.$t('minLength');
+			var i18nMaxLength = this.$t('maxLength');
+			var i18nPattern = this.$t('pattern');
+
+			if (api.parameters != null) {
+				for (var i = 0; i < api.parameters.length; i++) {
+					var param = api.parameters[i];
+					this.recursionResponseDataCreateId(param);
+					param.join = param.required == true || param.required == 'true';
+					var val = variables[param.in + '-' + param.name];
+					if (val != null) {
+						param.value = val;
 					}
-					pvs.push(pv);
-				}
-				localStorage.setItem(this.projectId, JSON.stringify(pvs));
-				this.$message.success(this.$t('completed'));
-			},
-			/**
-			 * 修改请求参数是否选中的显示状态
-			 * @param {Integer} id
-			 * @param {Integer} row
-			 */
-			changeCheckBoxSelect(id, row) {
-				row.join = !row.join;
-				if (row.join) {
-					document.getElementById(id).classList.add('is-checked');
-					document.getElementById(id).children[0].classList.add('is-checked');
-				} else {
-					document.getElementById(id).classList.remove('is-checked');
-					document.getElementById(id).children[0].classList.remove('is-checked');
-				}
-			},
-			/**
-			 * 请求参数离开后的事件
-			 * @param {Object} data
-			 */
-			paramsBlurHandler(data) {
-				if (data.name == '' || data.value == '') {
-					return;
-				}
-				if (data.in != 'body') {
-					return;
-				}
-				var body = this.api.body;
-				if (body == null || body == '') {
-					return;
-				}
-				this.api.body = body.replace(new RegExp('{' + data.name + '}', 'g'), data.value);
-			},
-			/**
-			 * 显示侧边栏
-			 */
-			showAside() {
-				if (this.isAsideShow === false) {
-					this.isAsideShow = true;
-					this.isMainShow = false;
-				} else {
-					this.isAsideShow = false;
-					this.isMainShow = true;
-				}
-			},
-			/**
-			 * 关闭侧边栏
-			 */
-			closeAside() {
-				if (this.isAsideShow === false) {
-					this.isAsideShow = true;
-					this.isMainShow = false;
-				} else {
-					this.isAsideShow = false;
-					this.isMainShow = true;
-				}
-			},
-			/**
-			 * 激活当前选中
-			 * @param {Integer} parent
-			 * @param {Integer} sub
-			 */
-			currentActive(parent, sub) {
-				this.menuCurrent = parent;
-				this.menuSubCurrent = sub;
-				//如果是小屏幕就控制是否显示侧边栏
-				if (this.isMainShow === false) {
-					this.isMainShow = true;
-					this.isAsideShow = false;
-				}
-				// -1代表选中项目信息
-				if (parent == -1 && sub == -1) {
-					return;
-				}
-				this.group = this.apiGroups[parent];
-				var data = this.group.apis[sub];
-				if (data == null) {
-					return;
-				}
-				//初始化请求参数变量
-				var variables = {};
-				for (var i = 0; i < this.parameterVariables.length; i++) {
-					var pv = this.parameterVariables[i];
-					variables[pv.in + '-' + pv.name] = pv.value;
-					if (pv.in == 'path') {
-						data.path = data.path.replace('{' + pv.name + '}', pv.value);
-						data.path = data.path.replace('/:' + pv.name, '/' + pv.value);
+					var contains = '';
+					if (param.default != null && param.default != '') {
+						contains += i18nDef + param.default + '　';
 					}
-				}
-
-				this.requestUrl = '';
-				this.customRequestParams = null;
-				var api = this.api;
-				api.title = data.title;
-				api.deprecated = data.deprecated;
-				api.method = data.method;
-				api.methodUpperCase = data.method.toUpperCase();
-
-				api.description = data.description;
-				api.additional = data.additional;
-				api.externalDocs = data.externalDocs;
-				api.consumes = data.consumes;
-				if (api.consumes != null && api.consumes.length > 0) {
-					api.requestType = api.consumes[0];
-				}
-				api.parameters = data.parameters;
-				api.version = data.version; //新版API还是旧版api,没有version代表旧版的api
-				//国际化字符
-				var i18nDef = this.$t('defaults');
-				var i18nEnum = this.$t('enums');
-				var i18nMin = this.$t('min');
-				var i18nMax = this.$t('max');
-				var i18nMinLength = this.$t('minLength');
-				var i18nMaxLength = this.$t('maxLength');
-				var i18nPattern = this.$t('pattern');
-
-				if (api.parameters != null) {
-					for (var i = 0; i < api.parameters.length; i++) {
-						var param = api.parameters[i];
-						this.recursionResponseDataCreateId(param);
-						param.join =( param.required == true||param.required == 'true');
-						var val = variables[param.in + '-' + param.name];
-						if (val != null) {
-							param.value = val;
+					if (param.enum != null && param.enum != '') {
+						contains += i18nEnum + param.enum + '　';
+					}
+					if (param.explain != null && param.explain != '') {
+						if (param.explain.min != null && param.explain.min != '') {
+							contains += i18nMin + param.explain.min + '　';
 						}
-						var contains = '';
-						if (param.default != null && param.default != '') {
-							contains += i18nDef + param.default+'　';
+						if (param.explain.max != null && param.explain.max != '') {
+							contains += i18nMax + param.explain.max + '　';
 						}
-						if (param.enum != null && param.enum != '') {
-							contains += i18nEnum + param.enum + '　';
-						}
-						if (param.explain != null && param.explain != '') {
-							if (param.explain.min != null && param.explain.min != '') {
-								contains += i18nMin + param.explain.min + '　';
-							}
-							if (param.explain.max != null && param.explain.max != '') {
-								contains += i18nMax + param.explain.max + '　';
-							}
-							if (param.explain.items != null && param.explain.items != '') {
-								param.items = param.explain.items;
-							}
-						}
-						if (param.pattern != null && param.pattern != '') {
-							contains += i18nPattern + param.pattern + '　';
-						}
-						if (param.def != null && param.def != '') {
-							contains += i18nDef + param.def + '　';
-						}
-						if (param.enums != null && param.enums != '') {
-							contains += i18nEnum + param.enums + '　';
-						}
-						if (param.minLength != null && param.minLength != '') {
-							contains += i18nMinLength + param.minLength + '　';
-						}
-						if (param.maxLength != null && param.maxLength != '') {
-							contains += i18nMaxLength + param.maxLength + '　';
-						}
-						if (param.minimum != null && param.minimum != '') {
-							contains += i18nMin + param.minimum + '　';
-						}
-						if (param.maximum != null && param.maximum != '') {
-							contains += i18nMax + param.maximum + '　';
-						}
-						if (param.minValue != null && param.minValue != '') {
-							contains += i18nMin + param.minValue + '　';
-						}
-						if (param.maxValue != null && param.maxValue != '') {
-							contains += i18nMax + param.maxValue + '　';
-						}
-						if (param.regex != null && param.regex != '') {
-							contains += i18nPattern + param.regex + '　';
-						}
-						if (contains != '') {
-							param.contains = contains;
+						if (param.explain.items != null && param.explain.items != '') {
+							param.items = param.explain.items;
 						}
 					}
-				} else {
-					api.parameters = [];
+					if (param.pattern != null && param.pattern != '') {
+						contains += i18nPattern + param.pattern + '　';
+					}
+					if (param.def != null && param.def != '') {
+						contains += i18nDef + param.def + '　';
+					}
+					if (param.enums != null && param.enums != '') {
+						contains += i18nEnum + param.enums + '　';
+					}
+					if (param.minLength != null && param.minLength != '') {
+						contains += i18nMinLength + param.minLength + '　';
+					}
+					if (param.maxLength != null && param.maxLength != '') {
+						contains += i18nMaxLength + param.maxLength + '　';
+					}
+					if (param.minimum != null && param.minimum != '') {
+						contains += i18nMin + param.minimum + '　';
+					}
+					if (param.maximum != null && param.maximum != '') {
+						contains += i18nMax + param.maximum + '　';
+					}
+					if (param.minValue != null && param.minValue != '') {
+						contains += i18nMin + param.minValue + '　';
+					}
+					if (param.maxValue != null && param.maxValue != '') {
+						contains += i18nMax + param.maxValue + '　';
+					}
+					if (param.regex != null && param.regex != '') {
+						contains += i18nPattern + param.regex + '　';
+					}
+					if (contains != '') {
+						param.contains = contains;
+					}
 				}
-				api.responses = data.responses;
-				if (api.responses != null && api.responses.length > 0 && (api.responses[0].status == null || api.responses[0].data ==
-						null)) {
-					api.responses = [{
+			} else {
+				api.parameters = [];
+			}
+			api.responses = data.responses;
+			if (api.responses != null && api.responses.length > 0 && (api.responses[0].status == null || api.responses[0].data == null)) {
+				api.responses = [
+					{
 						status: 200,
 						data: data.responses
-					}];
-				}
-				if (api.responses == null) {
-					api.responses = [];
-				}
-				for (var i = 0; i < api.responses.length; i++) {
-					var ard = api.responses[i].data;
-					if (ard == null) {
-						ard = [];
 					}
-					for (var j = 0; j < ard.length; j++) {
-						this.recursionResponseDataCreateId(ard[j]);
+				];
+			}
+			if (api.responses == null) {
+				api.responses = [];
+			}
+			for (var i = 0; i < api.responses.length; i++) {
+				var ard = api.responses[i].data;
+				if (ard == null) {
+					ard = [];
+				}
+				for (var j = 0; j < ard.length; j++) {
+					this.recursionResponseDataCreateId(ard[j]);
+				}
+			}
+			this.requestUrl = this.selectServer + data.path;
+			api.isSxecute = false;
+		},
+		/**
+		 * 递归响应的数据并给数据创建id
+		 * @param {Object} data
+		 */
+		recursionResponseDataCreateId(data) {
+			data.tableRowkey = Math.random();
+			if (data.items == null) {
+				return data;
+			}
+			for (var i = 0; i < data.items.length; i++) {
+				this.recursionResponseDataCreateId(data.items[i]);
+			}
+		},
+		/**
+		 * 自定义请求测试
+		 */
+		customRequest() {
+			this.menuCurrent = 999999;
+			this.menuSubCurrent = 999999;
+			this.requestUrl = '';
+			this.customRequestParams = [];
+			this.api = {
+				requestType: 'x-www-form-urlencoded',
+				consumes: ['x-www-form-urlencoded', 'application/json', 'multipart/form-data', 'application/xml'],
+				parameters: null,
+				body: null,
+				responses: null,
+				proxy: false,
+				responseTags: 'format',
+				requestHenders: {},
+				responseHeaders: {},
+				response: {},
+				isSxecute: false,
+				executing: false
+			};
+		},
+		/**
+		 * 添加自定义主机服务
+		 */
+		addCustomServer() {
+			if (this.customServer == '') {
+				return;
+			}
+			this.project.servers.push({
+				url: this.customServer,
+				description: ''
+			});
+			this.selectServer = this.customServer;
+			this.customServer = '';
+		},
+		/**
+		 * 添加自定义请求参数
+		 */
+		addCustomRequestParams() {
+			var param = {
+				join: true,
+				in: 'query',
+				type: 'string',
+				name: '',
+				value: '',
+				tableRowkey: Math.random()
+			};
+			this.customRequestParams.push(param);
+		},
+		/**
+		 * 加载所有项目
+		 */
+		loadProjectList() {
+			var tis = this;
+			axios
+				.get(SERVER_HOST + '/project/')
+				.then(res => {
+					var data = res.data;
+					if (data.code === 200) {
+						console.log('Loading project list succeeded!');
+						tis.projects = data.data;
+						tis.api.proxy = true;
+					} else {
+						console.log('Loading project list failed:');
+						console.log(res);
 					}
-				}
-				this.requestUrl = this.selectServer + data.path;
-				api.isSxecute = false;
-			},
-			/**
-			 * 递归响应的数据并给数据创建id
-			 * @param {Object} data
-			 */
-			recursionResponseDataCreateId(data) {
-				data.tableRowkey = Math.random();
-				if (data.items == null) {
-					return data;
-				}
-				for (var i = 0; i < data.items.length; i++) {
-					this.recursionResponseDataCreateId(data.items[i]);
-				}
-			},
-			/**
-			 * 自定义请求测试
-			 */
-			customRequest() {
-				this.menuCurrent = 999999;
-				this.menuSubCurrent = 999999;
-				this.requestUrl = '';
-				this.customRequestParams = [];
-				this.api = {
-					requestType: 'x-www-form-urlencoded',
-					consumes: ['x-www-form-urlencoded', 'application/json', 'multipart/form-data', 'application/xml'],
-					parameters: null,
-					body: null,
-					responses: null,
-					proxy: false,
-					responseTags: 'format',
-					requestHenders: {},
-					responseHeaders: {},
-					response: {},
-					isSxecute: false,
-					executing: false
-				};
-			},
-			/**
-			 * 添加自定义主机服务
-			 */
-			addCustomServer() {
-				if (this.customServer == '') {
-					return;
-				}
-				this.project.servers.push({
-					url: this.customServer,
-					description: ''
+				})
+				.catch(err => {
+					console.log('Loading project list failed:');
+					console.log(err);
 				});
-				this.selectServer = this.customServer;
-				this.customServer = '';
-			},
-			/**
-			 * 添加自定义请求参数
-			 */
-			addCustomRequestParams() {
-				var param = {
-					join: true,
-					in: 'query',
-					type: 'string',
-					name: '',
-					value: '',
-					tableRowkey: Math.random()
-				};
-				this.customRequestParams.push(param);
-			},
-			/**
-			 * 加载所有项目
-			 */
-			loadProjectList() {
-				var tis = this;
+		},
+		/**
+		 * 通过id加载项目信息
+		 * @param {String} id
+		 */
+		getProject(id) {
+			if (id == null || id == '') {
+				return;
+			}
+			var i18nTitle = this.$t('loadFailed');
+			var i18nTips = this.$t('loadFailedTips');
+			var tis = this;
+			axios
+				.get(SERVER_HOST + '/project/getJson/' + id)
+				.then(res => {
+					var data = res.data;
+					console.log(data);
+					tis.loadDocument(data);
+				})
+				.catch(err => {
+					tis.$notify.error({
+						title: i18nTitle,
+						message: i18nTips,
+						position: 'bottom-right'
+					});
+					console.log(err);
+				});
+		},
+		/**
+		 * 通过URL加载项目信息
+		 */
+		getProjectFromUrl() {
+			if (this.fileUrl.trim() === '') {
+				return;
+			}
+			var tis = this;
+			var i18nTitle = this.$t('loadFailed');
+			var i18nTips = this.$t('loadFailedTips');
+			var i18nProxyFailed = this.$t('requestProxyFailed');
+			var i18nProxyFailedTips = this.$t('requestProxyFailedTips');
+
+			var urls = tis.fileUrl;
+			if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
+				urls = urls.substring(2);
 				axios
-					.get(SERVER_HOST + '/project/')
+					.get(SERVER_HOST + '/proxy/project?url=' + urls)
 					.then(res => {
-						var data = res.data;
-						if (data.code === 200) {
-							console.log('Loading project list succeeded!');
-							tis.projects = data.data;
-							tis.api.proxy = true;
+						if (res.data.code == 200) {
+							tis.loadDocument(JSON.parse(res.data.data));
 						} else {
-							console.log('Loading project list failed:');
+							tis.$notify.error({
+								title: i18nProxyFailed,
+								message: i18nProxyFailedTips,
+								position: 'bottom-right'
+							});
 							console.log(res);
 						}
 					})
 					.catch(err => {
-						console.log('Loading project list failed:');
+						tis.$notify.error({
+							title: i18nProxyFailed,
+							message: i18nProxyFailedTips,
+							position: 'bottom-right'
+						});
 						console.log(err);
 					});
-			},
-			/**
-			 * 通过id加载项目信息
-			 * @param {String} id
-			 */
-			getProject(id) {
-				if (id == null || id == '') {
-					return;
-				}
-				var i18nTitle = this.$t('loadFailed');
-				var i18nTips = this.$t('loadFailedTips');
-				var tis = this;
+			} else {
 				axios
-					.get(SERVER_HOST + '/project/getJson/' + id)
+					.get(tis.fileUrl)
 					.then(res => {
 						var data = res.data;
-						console.log(data);
 						tis.loadDocument(data);
 					})
 					.catch(err => {
@@ -900,830 +969,776 @@
 						});
 						console.log(err);
 					});
-			},
-			/**
-			 * 通过URL加载项目信息
-			 */
-			getProjectFromUrl() {
-				if (this.fileUrl.trim() === '') {
-					return;
-				}
-				var tis = this;
-				var i18nTitle = this.$t('loadFailed');
-				var i18nTips = this.$t('loadFailedTips');
-				var i18nProxyFailed = this.$t('requestProxyFailed');
-				var i18nProxyFailedTips = this.$t('requestProxyFailedTips');
-
-				var urls = tis.fileUrl;
-				if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
-					urls = urls.substring(2);
-					axios
-						.get(SERVER_HOST + '/proxy/project?url=' + urls)
-						.then(res => {
-							if (res.data.code == 200) {
-								tis.loadDocument(JSON.parse(res.data.data));
-							} else {
-								tis.$notify.error({
-									title: i18nProxyFailed,
-									message: i18nProxyFailedTips,
-									position: 'bottom-right'
-								});
-								console.log(res);
-							}
-						})
-						.catch(err => {
-							tis.$notify.error({
-								title: i18nProxyFailed,
-								message: i18nProxyFailedTips,
-								position: 'bottom-right'
-							});
-							console.log(err);
-						});
-				} else {
-					axios
-						.get(tis.fileUrl)
-						.then(res => {
-							var data = res.data;
-							tis.loadDocument(data);
-						})
-						.catch(err => {
-							tis.$notify.error({
-								title: i18nTitle,
-								message: i18nTips,
-								position: 'bottom-right'
-							});
-							console.log(err);
-						});
-				}
-			},
-			/**
-			 * 通过本地文件加载项目信息
-			 */
-			getProjectFromFile() {
-				var reader = new FileReader();
-				var file = this.$refs.readFile.files[0];
-				reader.readAsText(file);
-				var tis = this;
-				var i18nTitle = this.$t('loadFailed');
-				var i18nTips = this.$t('loadFailedTips');
-				reader.onload = function(res) {
-					try {
-						tis.loadDocument(JSON.parse(res.target.result));
-					} catch (err) {
-						tis.$notify.error({
-							title: i18nTitle,
-							message: i18nTips,
-							position: 'bottom-right'
-						});
-						console.log(err);
-					}
-				};
-			},
-			/**
-			 * 加载接口文档
-			 * @param {Object} data
-			 */
-			loadDocument(data) {
-				if (data == null) {
-					return;
-				}
-				console.log(data);
-				//获取数据版本
-				var orion = data.orionApi;
-				var openapi = data.openapi;
-				var swagger = data.swagger;
+			}
+		},
+		/**
+		 * 通过本地文件加载项目信息
+		 */
+		getProjectFromFile() {
+			var reader = new FileReader();
+			var file = this.$refs.readFile.files[0];
+			reader.readAsText(file);
+			var tis = this;
+			var i18nTitle = this.$t('loadFailed');
+			var i18nTips = this.$t('loadFailedTips');
+			reader.onload = function(res) {
 				try {
-					if (openapi != null && openapi.startsWith('3.')) {
-						var orionData = swaggerConvert(data);
-						if (orionData == null) {
-							this.$message.error('加载项目,该文档无效或无法识别!');
-							return;
-						}
-						console.log('load Open API:');
-						this.loadProject(orionData);
-					} else if (swagger != null && swagger.startsWith('2.')) {
-						var orionData = swaggerConvert(data);
-						if (orionData == null) {
-							this.$message.error('加载项目,该文档无效或无法识别!');
-							return;
-						}
-						console.log('load Swagger:');
-						this.loadProject(orionData);
-					} else {
-						this.loadProject(data);
-					}
+					tis.loadDocument(JSON.parse(res.target.result));
 				} catch (err) {
-					this.projectLoading = false;
-					this.$message.error('加载项目信息失败,更多信息请查看控制台!');
-					console.log(err);
-				}
-			},
-			/**
-			 * 加载项目信息
-			 *
-			 * @param {Object} data
-			 */
-			loadProject(data) {
-				if (data == null || '{}' == JSON.stringify(data)) {
-					return;
-				}
-				this.projectId = data.key;
-				if (localStorage.getItem(data.key) != null && localStorage.getItem(data.key) != '') {
-					try {
-						this.parameterVariables = JSON.parse(localStorage.getItem(data.key));
-					} catch (err) {
-						console.log('init Parameter variables failed:');
-						console.log(err);
-					}
-				}
-				this.project.isload = true;
-				this.project.key = data.key;
-				this.project.name = data.name;
-				this.project.versions = data.versions;
-				this.project.description = data.description;
-				if (data.servers == null || data.servers == '') {
-					this.project.schemes = data.schemes;
-					var servers = [];
-					for (var i = 0; i < data.schemes.length; i++) {
-						var scheme = data.schemes[i];
-						var bp = data.basePath == null ? '' : data.basePath;
-						var server = {
-							url: scheme + '://' + data.host + bp,
-							description: ''
-						};
-						servers.push(server);
-					}
-					this.project.servers = servers;
-				} else {
-					this.project.servers = data.servers;
-				}
-				if (this.project.servers.length > 0) {
-					this.selectServer = this.project.servers[0].url;
-				}
-				this.project.contactName = data.contactName;
-				this.project.contactInfo = data.contactInfo;
-				this.project.externalDocs = data.externalDocs;
-				this.project.lastTime = data.lastTime;
-				this.apiGroups = data.content;
-
-				var i18nTips = this.$t('tips');
-				var i18nLoadSucceeded = this.$t('loadSucceeded');
-				this.$notify({
-					title: i18nTips,
-					message: i18nLoadSucceeded,
-					type: 'success',
-					position: 'bottom-left',
-					duration: 1000
-				});
-			},
-			copy() {
-				var data = this.requestUrl;
-				console.log('copy:data=' + data);
-				this.toCopy(data);
-			},
-			copyCustom() {
-				var data = this.requestUrl;
-				console.log('copy:data=' + data);
-				this.toCopy(data);
-			},
-			copyPath() {
-				var data = this.requestUrl.replace(this.selectServer, '');
-				console.log('copy-path:data=' + data);
-				this.toCopy(data);
-			},
-			toCopy(data) {
-				var oInput = document.createElement('input');
-				oInput.value = data;
-				document.body.appendChild(oInput);
-				oInput.select();
-				document.execCommand('Copy');
-				var i18nCopyed = this.$t('copySucceeded');
-				this.$notify({
-					title: i18nCopyed,
-					type: 'success',
-					position: 'bottom-right'
-				});
-				oInput.remove();
-			},
-			/**
-			 * 执行请求
-			 */
-			execute() {
-				//是否为自定义请求
-				var isCustomRequest = this.menuSubCurrent == 999999;
-
-				var isProxy = this.api.proxy;
-				var type = this.api.requestType;
-				var method = this.api.method;
-
-				var url;
-				var params;
-				if (isCustomRequest) {
-					url = this.requestUrl;
-					params = this.customRequestParams || {};
-				} else {
-					url = this.requestUrl;
-					params = this.api.parameters || {};
-				}
-				if (url == '') {
-					var i18nRequestFailed = this.$t('requestFailed');
-					var i18nUrlCannotBeEmpty = this.$t('urlCannotBeEmpty');
-					this.$notify.error({
-						title: i18nRequestFailed,
-						message: i18nUrlCannotBeEmpty,
+					tis.$notify.error({
+						title: i18nTitle,
+						message: i18nTips,
 						position: 'bottom-right'
 					});
-					return;
+					console.log(err);
 				}
-				var header = null;
-				var query = null;
-				var body = null;
-				for (var i = 0; i < params.length; i++) {
-					if (params[i].join) {
-						if (params[i].value == null && params[i].in != 'path') {
-							continue;
-						}
-						switch (params[i].in.toLowerCase()) {
-							case 'path':
-								var reg = new RegExp('{' + params[i].name + '}', 'g');
-								url = url.replace(reg, params[i].value || '');
-								reg = new RegExp('/:' + params[i].name, 'g');
-								url = url.replace(reg, '/' + (params[i].value || ''));
-								break;
-							case 'header':
-								if (header == null) {
-									header = {};
-								}
-								header[params[i].name] = params[i].value;
-								break;
-							case 'formdata':
-								if (body == null) {
-									body = {};
-								}
-								body[params[i].name] = params[i].value;
-								break;
-							case 'body':
-								if (body == null) {
-									body = {};
-								}
-								body[params[i].name] = params[i].value;
-								break;
-							default:
-								if (query == null) {
-									query = {};
-								}
-								query[params[i].name] = params[i].value;
-						}
+			};
+		},
+		/**
+		 * 加载接口文档
+		 * @param {Object} data
+		 */
+		loadDocument(data) {
+			if (data == null) {
+				return;
+			}
+			console.log(data);
+			//获取数据版本
+			var orion = data.orionApi;
+			var openapi = data.openapi;
+			var swagger = data.swagger;
+			try {
+				if (openapi != null && openapi.startsWith('3.')) {
+					var orionData = swaggerConvert(data);
+					if (orionData == null) {
+						this.$message.error('加载项目,该文档无效或无法识别!');
+						return;
 					}
-				}
-
-				var tis = this;
-				tis.api.executing = true;
-				var requestData = {};
-				requestData.method = method;
-				if (isProxy) {
-					requestData.url = SERVER_HOST + '/proxy/server';
-					requestData.headers = {};
-					if (header != null) {
-						for (var key in header) {
-							tis.api.requestHenders[key] = header[key];
-						}
-						requestData.headers['x-header'] = JSON.stringify(header);
+					console.log('load Open API:');
+					this.loadProject(orionData);
+				} else if (swagger != null && swagger.startsWith('2.')) {
+					var orionData = swaggerConvert(data);
+					if (orionData == null) {
+						this.$message.error('加载项目,该文档无效或无法识别!');
+						return;
 					}
-					requestData.headers['x-url'] = url;
+					console.log('load Swagger:');
+					this.loadProject(orionData);
 				} else {
-					requestData.url = url;
-					if (header != null) {
-						requestData.headers = header;
-						for (var key in header) {
-							tis.api.requestHenders[key] = header[key];
-						}
+					this.loadProject(data);
+				}
+			} catch (err) {
+				this.projectLoading = false;
+				this.$message.error('加载项目信息失败,更多信息请查看控制台!');
+				console.log(err);
+			}
+		},
+		/**
+		 * 加载项目信息
+		 *
+		 * @param {Object} data
+		 */
+		loadProject(data) {
+			if (data == null || '{}' == JSON.stringify(data)) {
+				return;
+			}
+			this.projectId = data.key;
+			if (localStorage.getItem(data.key) != null && localStorage.getItem(data.key) != '') {
+				try {
+					this.parameterVariables = JSON.parse(localStorage.getItem(data.key));
+				} catch (err) {
+					console.log('init Parameter variables failed:');
+					console.log(err);
+				}
+			}
+			this.project.isload = true;
+			this.project.key = data.key;
+			this.project.name = data.name;
+			this.project.versions = data.versions;
+			this.project.description = data.description;
+			if (data.servers == null || data.servers == '') {
+				this.project.schemes = data.schemes;
+				var servers = [];
+				for (var i = 0; i < data.schemes.length; i++) {
+					var scheme = data.schemes[i];
+					var bp = data.basePath == null ? '' : data.basePath;
+					var server = {
+						url: scheme + '://' + data.host + bp,
+						description: ''
+					};
+					servers.push(server);
+				}
+				this.project.servers = servers;
+			} else {
+				this.project.servers = data.servers;
+			}
+			if (this.project.servers.length > 0) {
+				this.selectServer = this.project.servers[0].url;
+			}
+			this.project.contactName = data.contactName;
+			this.project.contactInfo = data.contactInfo;
+			this.project.externalDocs = data.externalDocs;
+			this.project.lastTime = data.lastTime;
+			this.apiGroups = data.content;
+
+			var i18nTips = this.$t('tips');
+			var i18nLoadSucceeded = this.$t('loadSucceeded');
+			this.$notify({
+				title: i18nTips,
+				message: i18nLoadSucceeded,
+				type: 'success',
+				position: 'bottom-left',
+				duration: 1000
+			});
+		},
+		copy() {
+			var data = this.requestUrl;
+			console.log('copy:data=' + data);
+			this.toCopy(data);
+		},
+		copyCustom() {
+			var data = this.requestUrl;
+			console.log('copy:data=' + data);
+			this.toCopy(data);
+		},
+		copyPath() {
+			var data = this.requestUrl.replace(this.selectServer, '');
+			console.log('copy-path:data=' + data);
+			this.toCopy(data);
+		},
+		toCopy(data) {
+			var oInput = document.createElement('input');
+			oInput.value = data;
+			document.body.appendChild(oInput);
+			oInput.select();
+			document.execCommand('Copy');
+			var i18nCopyed = this.$t('copySucceeded');
+			this.$notify({
+				title: i18nCopyed,
+				type: 'success',
+				position: 'bottom-right'
+			});
+			oInput.remove();
+		},
+		/**
+		 * 执行请求
+		 */
+		execute() {
+			//是否为自定义请求
+			var isCustomRequest = this.menuSubCurrent == 999999;
+
+			var isProxy = this.api.proxy;
+			var type = this.api.requestType;
+			var method = this.api.method;
+
+			var url;
+			var params;
+			if (isCustomRequest) {
+				url = this.requestUrl;
+				params = this.customRequestParams || {};
+			} else {
+				url = this.requestUrl;
+				params = this.api.parameters || {};
+			}
+			if (url == '') {
+				var i18nRequestFailed = this.$t('requestFailed');
+				var i18nUrlCannotBeEmpty = this.$t('urlCannotBeEmpty');
+				this.$notify.error({
+					title: i18nRequestFailed,
+					message: i18nUrlCannotBeEmpty,
+					position: 'bottom-right'
+				});
+				return;
+			}
+			var header = null;
+			var query = null;
+			var body = null;
+			for (var i = 0; i < params.length; i++) {
+				if (params[i].join) {
+					if (params[i].value == null && params[i].in != 'path') {
+						continue;
+					}
+					switch (params[i].in.toLowerCase()) {
+						case 'path':
+							var reg = new RegExp('{' + params[i].name + '}', 'g');
+							url = url.replace(reg, params[i].value || '');
+							reg = new RegExp('/:' + params[i].name, 'g');
+							url = url.replace(reg, '/' + (params[i].value || ''));
+							break;
+						case 'header':
+							if (header == null) {
+								header = {};
+							}
+							header[params[i].name] = params[i].value;
+							break;
+						case 'formdata':
+							if (body == null) {
+								body = {};
+							}
+							body[params[i].name] = params[i].value;
+							break;
+						case 'body':
+							if (body == null) {
+								body = {};
+							}
+							body[params[i].name] = params[i].value;
+							break;
+						default:
+							if (query == null) {
+								query = {};
+							}
+							query[params[i].name] = params[i].value;
 					}
 				}
-				//设置请求参数
-				if (query != null) {
-					requestData.params = query;
+			}
+
+			var tis = this;
+			tis.api.executing = true;
+			var requestData = {};
+			requestData.method = method;
+			if (isProxy) {
+				requestData.url = SERVER_HOST + '/proxy/server';
+				requestData.headers = {};
+				if (header != null) {
+					for (var key in header) {
+						tis.api.requestHenders[key] = header[key];
+					}
+					requestData.headers['x-header'] = JSON.stringify(header);
 				}
-				var useBody = true;
-				//请求的主体不为空则覆盖body
-				if (this.api.body != null && this.api.body.trim() != '') {
-					body = this.api.body.trim();
-					useBody = false;
+				requestData.headers['x-url'] = url;
+			} else {
+				requestData.url = url;
+				if (header != null) {
+					requestData.headers = header;
+					for (var key in header) {
+						tis.api.requestHenders[key] = header[key];
+					}
 				}
-				var contentType = null;
-				//设置body参数
-				if (body != null) {
-					if (type.indexOf('xml') != -1) {
-						contentType = 'application/xml';
-						if (useBody) {
-							requestData.data = xmlBuilder.buildObject(body);
-						} else {
-							requestData.data = body;
-						}
-					} else if (type.indexOf('urlencoded') != -1) {
-						contentType = 'application/x-www-form-urlencoded';
-						if (useBody) {
-							requestData.data = qs.stringify(body);
-						} else {
-							requestData.data = body;
-						}
-					} else if (type.indexOf('form-data') != -1) {
-						contentType = 'multipart/form-data';
-						if (useBody) {
-							var formData = new FormData();
-							Object.keys(body).forEach(key => {
-								formData.append(key, body[key]);
-							});
-							requestData.data = formData;
-						} else {
-							requestData.data = body;
-						}
+			}
+			//设置请求参数
+			if (query != null) {
+				requestData.params = query;
+			}
+			var useBody = true;
+			//请求的主体不为空则覆盖body
+			if (this.api.body != null && this.api.body.trim() != '') {
+				body = this.api.body.trim();
+				useBody = false;
+			}
+			var contentType = null;
+			//设置body参数
+			if (body != null) {
+				if (type.indexOf('xml') != -1) {
+					contentType = 'application/xml';
+					if (useBody) {
+						requestData.data = xmlBuilder.buildObject(body);
 					} else {
-						if (type != null && type != '') {
-							contentType = type;
-						}
 						requestData.data = body;
 					}
-				}
-
-				if (contentType != null) {
-					if (requestData.headers == null) {
-						requestData.headers = {};
-					}
-					if (isProxy) {
-						requestData.headers['x-type'] = contentType;
+				} else if (type.indexOf('urlencoded') != -1) {
+					contentType = 'application/x-www-form-urlencoded';
+					if (useBody) {
+						requestData.data = qs.stringify(body);
 					} else {
-						requestData.headers['Content-Type'] = contentType;
+						requestData.data = body;
 					}
+				} else if (type.indexOf('form-data') != -1) {
+					contentType = 'multipart/form-data';
+					if (useBody) {
+						var formData = new FormData();
+						Object.keys(body).forEach(key => {
+							formData.append(key, body[key]);
+						});
+						requestData.data = formData;
+					} else {
+						requestData.data = body;
+					}
+				} else {
+					if (type != null && type != '') {
+						contentType = type;
+					}
+					requestData.data = body;
 				}
+			}
 
-				axios(requestData)
-					.then(res => {
-						tis.api.isSxecute = true;
-						tis.api.executing = false;
-						tis.api.response = res.data;
-						tis.api.responseHeaders.status = res.status;
-						if (isProxy && header != null) {
-							tis.api.responseHeaders.tips = this.$t('responseHeaderTips');
-						} else {
-							delete tis.api.responseHeaders.tips;
-						}
-						for (var key in res.headers) {
-							tis.api.responseHeaders[key] = res.headers[key];
-						}
-						console.log('request result:');
-						console.log(res);
-					})
-					.catch(err => {
-						tis.api.isSxecute = true;
-						tis.api.executing = false;
-						if (err.headers) {
-							for (var key in err.headers) {
-								tis.api.responseHeaders[key] = err.headers[key];
-							}
-						}
-						if (err.response != null && err.response.data != null) {
-							tis.api.response = err.response.data;
-						} else {
-							var error = {};
-							error.tips = tis.$t('moreInfoTips');
-							error.error = err;
-							tis.api.response = error;
-						}
-						console.log('request error: ');
-						console.log(err);
-					});
+			if (contentType != null) {
+				if (requestData.headers == null) {
+					requestData.headers = {};
+				}
+				if (isProxy) {
+					requestData.headers['x-type'] = contentType;
+				} else {
+					requestData.headers['Content-Type'] = contentType;
+				}
 			}
-		},
-		created() {
-			//加载项目列表
-			this.loadProjectList();
-			//如果id不为空就加载项目加载项目
-			var pid = getParams('id', window.location.href);
-			var fileUrl = getParams('fileUrl', window.location.href);
-			if (pid != null && pid != '') {
-				this.projectId = pid;
-				this.getProject(this.projectId);
-			} else if (fileUrl != null && fileUrl != '') {
-				this.fileUrl = fileUrl;
-				this.getProjectFromUrl();
-			}
-		},
-		mounted() {
-			var tis = this;
-			tis.isAsideShow = document.body.offsetWidth > 768;
-			window.onresize = function() {
-				tis.isAsideShow = document.body.offsetWidth > 768;
-				tis.isMainShow = true;
-			};
+
+			axios(requestData)
+				.then(res => {
+					tis.api.isSxecute = true;
+					tis.api.executing = false;
+					tis.api.response = res.data;
+					tis.api.responseHeaders.status = res.status;
+					if (isProxy && header != null) {
+						tis.api.responseHeaders.tips = this.$t('responseHeaderTips');
+					} else {
+						delete tis.api.responseHeaders.tips;
+					}
+					for (var key in res.headers) {
+						tis.api.responseHeaders[key] = res.headers[key];
+					}
+					console.log('request result:');
+					console.log(res);
+				})
+				.catch(err => {
+					tis.api.isSxecute = true;
+					tis.api.executing = false;
+					if (err.headers) {
+						for (var key in err.headers) {
+							tis.api.responseHeaders[key] = err.headers[key];
+						}
+					}
+					if (err.response != null && err.response.data != null) {
+						tis.api.response = err.response.data;
+					} else {
+						var error = {};
+						error.tips = tis.$t('moreInfoTips');
+						error.error = err;
+						tis.api.response = error;
+					}
+					console.log('request error: ');
+					console.log(err);
+				});
 		}
-	};
+	},
+	created() {
+		//加载项目列表
+		this.loadProjectList();
+		//如果id不为空就加载项目加载项目
+		var pid = getParams('id', window.location.href);
+		var fileUrl = getParams('fileUrl', window.location.href);
+		if (pid != null && pid != '') {
+			this.projectId = pid;
+			this.getProject(this.projectId);
+		} else if (fileUrl != null && fileUrl != '') {
+			this.fileUrl = fileUrl;
+			this.getProjectFromUrl();
+		}
+	},
+	mounted() {
+		var tis = this;
+		tis.isAsideShow = document.body.offsetWidth > 768;
+		window.onresize = function() {
+			tis.isAsideShow = document.body.offsetWidth > 768;
+			tis.isMainShow = true;
+		};
+	}
+};
 </script>
 <style>
-	/* 修改框架样式 */
-	.el-drawer.btt {
-		height: 50% !important;
+/* 修改框架样式 */
+.el-drawer.btt {
+	height: 50% !important;
+}
+
+.el-drawer__header {
+	margin-bottom: 0 !important;
+	text-align: center;
+}
+
+.el-drawer__body {
+	overflow: auto;
+	padding: 0 20px;
+}
+
+.el-drawer__body a:hover {
+	border-bottom: 2px solid #409eff !important;
+}
+
+.el-form-item {
+	margin-bottom: 0 !important;
+}
+
+.el-input__inner::placeholder {
+	color: #666 !important;
+}
+
+/* 通用样式 */
+a {
+	text-decoration: none;
+	color: #304455;
+}
+
+img {
+	border: none;
+}
+
+.body-max-width {
+	max-width: 1240px;
+}
+
+.xs-left-sm-rigth {
+	text-align: right;
+}
+
+.mb10px {
+	margin-bottom: 10px;
+}
+
+.prem05 {
+	padding: 0.5rem;
+}
+
+.plrrem05 {
+	padding: 0 0.5rem;
+}
+
+.background-color-white {
+	background-color: white;
+}
+
+.flexCenter {
+	display: flex;
+	align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+	#mobile-bar {
+		display: block !important;
 	}
 
-	.el-drawer__header {
-		margin-bottom: 0 !important;
-		text-align: center;
+	#pc-bar {
+		display: none !important;
 	}
 
-	.el-drawer__body {
-		overflow: auto;
-		padding: 0 20px;
+	#aside {
+		padding-top: 40px !important;
+		width: 100% !important;
 	}
 
-	.el-drawer__body a:hover {
-		border-bottom: 2px solid #409eff !important;
-	}
-
-	.el-form-item {
-		margin-bottom: 0 !important;
-	}
-
-	.el-input__inner::placeholder {
-		color: #666 !important;
-	}
-
-	/* 通用样式 */
-	a {
-		text-decoration: none;
-		color: #304455;
-	}
-
-	img {
-		border: none;
-	}
-
-	.body-max-width {
-		max-width: 1240px;
+	#main {
+		padding-top: 60px !important;
 	}
 
 	.xs-left-sm-rigth {
-		text-align: right;
+		text-align: left;
 	}
-
-	.mb10px {
-		margin-bottom: 10px;
-	}
-
-	.prem05 {
-		padding: 0.5rem;
-	}
-
-	.plrrem05 {
-		padding: 0 0.5rem;
-	}
-
-	.background-color-white {
-		background-color: white;
-	}
-
-	.flexCenter {
-		display: flex;
-		align-items: center;
-	}
-
-	@media screen and (max-width: 768px) {
-		#mobile-bar {
-			display: block !important;
-		}
-
-		#pc-bar {
-			display: none !important;
-		}
-
-		#aside {
-			padding-top: 40px !important;
-			width: 100% !important;
-		}
-
-		#main {
-			padding-top: 60px !important;
-		}
-
-		.xs-left-sm-rigth {
-			text-align: left;
-		}
-	}
-
-	/* 手机导航栏 */
-	#mobile-bar {
-		position: fixed;
-		display: none;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 40px;
-		background-color: #fff;
-		z-index: 20;
-		box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
-	}
-
-	#mobile-bar .menu-button {
-		position: absolute;
-		top: 8px;
-		left: 12px;
-		font-size: 24px;
-		color: #444 !important;
-		z-index: 2;
-	}
-
-	#mobile-bar .logo {
-		position: absolute;
-		top: 10px;
-		text-align: center;
-		width: 100%;
-	}
-
-	/* 电脑导航栏 */
-	#pc-bar {
-		position: fixed;
-		width: 100%;
-		top: 0;
-		width: 100%;
-		box-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
-		transition: background-color 0.3s ease-in-out;
-		background-color: #fff;
-		height: 40px;
-		padding: 10px 60px;
-		z-index: 10;
-	}
-
-	#logo {
-		display: inline-block;
-		font-size: 1.5em;
-		line-height: 40px;
-		color: #273849;
-		font-family: 'Dosis', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
-		font-weight: 500;
-	}
-
-	#logo img {
-		vertical-align: middle;
-		margin-right: 6px;
-		width: 40px;
-		height: 40px;
-	}
-
-	#nav {
-		position: fixed;
-	}
-
-	#nav {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
-		position: absolute;
-		right: 30px;
-		top: 10px;
-		height: 40px;
-		line-height: 40px;
-	}
-
-	#nav li {
-		display: inline-block;
-		position: relative;
-		margin: 0 0.6em;
-		cursor: pointer;
-	}
-
-	#nav li a:hover {
-		padding-bottom: 2px;
-		border-bottom: 2px solid #409eff;
-	}
-
-	/* 侧边栏 */
-	#aside {
-		color: #333;
-		padding-top: 80px;
-		min-width: 300px;
-		height: 100vh;
-		cursor: pointer;
-	}
-
-	#aside #menu-body {
-		width: 100%;
-		height: 100%;
-		margin: 0;
-		padding: 0;
-		list-style-type: none;
-	}
-
-	#aside #menu-body li {
-		margin-left: 16px;
-		line-height: 2rem;
-	}
-
-	#aside #menu-body span:hover {
-		border-bottom: 2px solid #409eff !important;
-		padding-bottom: 2px;
-	}
-
-	#aside #menu-body .current {
-		font-weight: 600;
-		color: #409eff;
-	}
-
-	#aside #menu-body .current .line {
-		padding-bottom: 2px;
-		border-bottom: 2px solid #409eff;
-	}
-
-	#aside #menu-body .current .line-min {
-		padding-bottom: 2px;
-		border-bottom: 1px solid #409eff;
-	}
-
-	#aside #menu-body .menu-sub li:hover {
-		color: #409eff;
-		border-bottom: 0;
-	}
-
-	#aside #menu-body .menu-sub {
-		width: 100%;
-		height: 100%;
-		margin: 0;
-		padding: 0;
-		list-style-type: none;
-	}
-
-	/* 中心 */
-	#main {
-		color: #333;
-		padding-top: 80px;
-		height: 100vh;
-	}
-
-	.api-body {
-		border: 1px solid #3b4151;
-		background-color: #f5f7fa;
-		margin-bottom: 50px;
-	}
-
-	.api-body .api-header {
-		background-color: #3b4151;
-		font-size: 1.25rem;
-		color: white;
-		padding: 0.3125rem 0.625rem;
-	}
-
-	.api-body-get {
-		background-color: #ebf3fb;
-		border: 1px solid #61affe;
-	}
-
-	.api-body .api-header-get {
-		background-color: #61affe;
-	}
-
-	.api-body-post {
-		background-color: #e8f6f0;
-		border: 1px solid #49cc90;
-	}
-
-	.api-body .api-header-post {
-		background-color: #49cc90;
-	}
-
-	.api-body-put {
-		background-color: #fbf1e6;
-		border: 1px solid #fca130;
-	}
-
-	.api-body .api-header-put {
-		background-color: #fca130;
-	}
-
-	.api-body-delete {
-		background-color: #fae7e7;
-		border: 1px solid #f93e3e;
-	}
-
-	.api-body .api-header-delete {
-		background-color: #f93e3e;
-	}
-
-	.api-body-head {
-		background-color: #f4e7ff;
-		border: 1px solid #9012fe;
-	}
-
-	.api-body .api-header-head {
-		background-color: #9012fe;
-	}
-
-	.api-body-options {
-		background-color: #e6eef6;
-		border: 1px solid #0d5aa7;
-	}
-
-	.api-body .api-header-options {
-		background-color: #0d5aa7;
-	}
-
-	.api-body-patch {
-		background-color: #edfcf9;
-		border: 1px solid #50e3c2;
-	}
-
-	.api-body .api-header-patch {
-		background-color: #50e3c2;
-	}
-
-	.api-body-trace {
-		background-color: #ffe9e6;
-		border: 1px solid #ffa8be;
-	}
-
-	.api-body .api-header-trace {
-		background-color: #ffa8be;
-	}
-
-	.api-body-connect {
-		background-color: #e6f6f1;
-		border: 1px solid #83bb83;
-	}
-
-	.api-body .api-header-connect {
-		background-color: #83bb83;
-	}
-
-	.api-body .api-header .api-header-item {
-		line-height: 2.5rem;
-	}
-
-	.api-body .api-body-param-header {
-		padding: 0.5rem;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: first baseline;
-		justify-content: space-between;
-	}
-
-	.api-body .api-body-result-header {
-		padding: 0.5rem;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: first baseline;
-		justify-content: space-between;
-	}
-
-	.api-body .api-body-response-header {
-		padding: 0.5rem;
-		display: flex;
-		flex-wrap: wrap;
-		align-items: first baseline;
-		justify-content: space-between;
-	}
-
-	.api-body .api-body-response-body {
-		color: white;
-		background-color: #18181a;
-		padding: 0 0.5rem 0.5rem 0.5rem;
-		display: flex;
-	}
-
-	.api-body .api-body-response-body .el-tabs__item {
-		color: white;
-	}
-
-	.api-body .api-body-response-body .el-tabs__item.is-active {
-		color: #409eff;
-	}
-
-	.api-body .api-body-response-body .el-divider__text {
-		background-color: #18181a;
-		color: #409eff;
-	}
-
-	.api-body .api-body-response-body .jv-container {
-		background-color: #18181a;
-	}
-
-	.api-body .api-body-response-body .jv-container.jv-light {
-		color: white;
-	}
-
-	.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-object {
-		color: white;
-	}
-
-	.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-array {
-		color: white;
-	}
-
-	.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-string {
-		color: #ff7de9;
-	}
-
-	.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-boolean {
-		color: gold;
-	}
-
-	.api-body .api-body-response-body .jv-container.jv-light .jv-key {
-		color: #409eff;
-	}
+}
+
+/* 手机导航栏 */
+#mobile-bar {
+	position: fixed;
+	display: none;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 40px;
+	background-color: #fff;
+	z-index: 20;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
+}
+
+#mobile-bar .menu-button {
+	position: absolute;
+	top: 8px;
+	left: 12px;
+	font-size: 24px;
+	color: #444 !important;
+	z-index: 2;
+}
+
+#mobile-bar .logo {
+	position: absolute;
+	top: 10px;
+	text-align: center;
+	width: 100%;
+}
+
+/* 电脑导航栏 */
+#pc-bar {
+	position: fixed;
+	width: 100%;
+	top: 0;
+	width: 100%;
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.25);
+	transition: background-color 0.3s ease-in-out;
+	background-color: #fff;
+	height: 40px;
+	padding: 10px 60px;
+	z-index: 10;
+}
+
+#logo {
+	display: inline-block;
+	font-size: 1.5em;
+	line-height: 40px;
+	color: #273849;
+	font-family: 'Dosis', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+	font-weight: 500;
+}
+
+#logo img {
+	vertical-align: middle;
+	margin-right: 6px;
+	width: 40px;
+	height: 40px;
+}
+
+#nav {
+	position: fixed;
+}
+
+#nav {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	right: 30px;
+	top: 10px;
+	height: 40px;
+	line-height: 40px;
+}
+
+#nav li {
+	display: inline-block;
+	position: relative;
+	margin: 0 0.6em;
+	cursor: pointer;
+}
+
+#nav li a:hover {
+	padding-bottom: 2px;
+	border-bottom: 2px solid #409eff;
+}
+
+/* 侧边栏 */
+#aside {
+	color: #333;
+	padding-top: 80px;
+	min-width: 300px;
+	height: 100vh;
+	cursor: pointer;
+}
+
+#aside #menu-body {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+#aside #menu-body li {
+	margin-left: 16px;
+	line-height: 2rem;
+}
+
+#aside #menu-body span:hover {
+	border-bottom: 2px solid #409eff !important;
+	padding-bottom: 2px;
+}
+
+#aside #menu-body .current {
+	font-weight: 600;
+	color: #409eff;
+}
+
+#aside #menu-body .current .line {
+	padding-bottom: 2px;
+	border-bottom: 2px solid #409eff;
+}
+
+#aside #menu-body .current .line-min {
+	padding-bottom: 2px;
+	border-bottom: 1px solid #409eff;
+}
+
+#aside #menu-body .menu-sub li:hover {
+	color: #409eff;
+	border-bottom: 0;
+}
+
+#aside #menu-body .menu-sub {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+/* 中心 */
+#main {
+	color: #333;
+	padding-top: 80px;
+	height: 100vh;
+}
+
+.api-body {
+	border: 1px solid #3b4151;
+	background-color: #f5f7fa;
+	margin-bottom: 50px;
+}
+
+.api-body .api-header {
+	background-color: #3b4151;
+	font-size: 1.25rem;
+	color: white;
+	padding: 0.3125rem 0.625rem;
+}
+
+.api-body-get {
+	background-color: #ebf3fb;
+	border: 1px solid #61affe;
+}
+
+.api-body .api-header-get {
+	background-color: #61affe;
+}
+
+.api-body-post {
+	background-color: #e8f6f0;
+	border: 1px solid #49cc90;
+}
+
+.api-body .api-header-post {
+	background-color: #49cc90;
+}
+
+.api-body-put {
+	background-color: #fbf1e6;
+	border: 1px solid #fca130;
+}
+
+.api-body .api-header-put {
+	background-color: #fca130;
+}
+
+.api-body-delete {
+	background-color: #fae7e7;
+	border: 1px solid #f93e3e;
+}
+
+.api-body .api-header-delete {
+	background-color: #f93e3e;
+}
+
+.api-body-head {
+	background-color: #f4e7ff;
+	border: 1px solid #9012fe;
+}
+
+.api-body .api-header-head {
+	background-color: #9012fe;
+}
+
+.api-body-options {
+	background-color: #e6eef6;
+	border: 1px solid #0d5aa7;
+}
+
+.api-body .api-header-options {
+	background-color: #0d5aa7;
+}
+
+.api-body-patch {
+	background-color: #edfcf9;
+	border: 1px solid #50e3c2;
+}
+
+.api-body .api-header-patch {
+	background-color: #50e3c2;
+}
+
+.api-body-trace {
+	background-color: #ffe9e6;
+	border: 1px solid #ffa8be;
+}
+
+.api-body .api-header-trace {
+	background-color: #ffa8be;
+}
+
+.api-body-connect {
+	background-color: #e6f6f1;
+	border: 1px solid #83bb83;
+}
+
+.api-body .api-header-connect {
+	background-color: #83bb83;
+}
+
+.api-body .api-header .api-header-item {
+	line-height: 2.5rem;
+}
+
+.api-body .api-body-param-header {
+	padding: 0.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: first baseline;
+	justify-content: space-between;
+}
+
+.api-body .api-body-result-header {
+	padding: 0.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: first baseline;
+	justify-content: space-between;
+}
+
+.api-body .api-body-response-header {
+	padding: 0.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: first baseline;
+	justify-content: space-between;
+}
+
+.api-body .api-body-response-body {
+	color: white;
+	background-color: #18181a;
+	padding: 0 0.5rem 0.5rem 0.5rem;
+	display: flex;
+}
+
+.api-body .api-body-response-body .el-tabs__item {
+	color: white;
+}
+
+.api-body .api-body-response-body .el-tabs__item.is-active {
+	color: #409eff;
+}
+
+.api-body .api-body-response-body .el-divider__text {
+	background-color: #18181a;
+	color: #409eff;
+}
+
+.api-body .api-body-response-body .jv-container {
+	background-color: #18181a;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light {
+	color: white;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-object {
+	color: white;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-array {
+	color: white;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-string {
+	color: #ff7de9;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-boolean {
+	color: gold;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-key {
+	color: #409eff;
+}
 </style>
