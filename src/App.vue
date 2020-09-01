@@ -377,7 +377,8 @@
 									</div>
 									<div v-show="item.data && item.data.length > 0">
 										<el-table :data="item.data" row-key="tableRowkey" border default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }">
-											<el-table-column prop="type" :label="$t('paramsType')" width="200"></el-table-column>
+											<el-table-column  prop="in" :label="$t('paramsPosition')" width="150" align="right"></el-table-column>
+											<el-table-column prop="type" :label="$t('paramsType')" width="120" align="right"></el-table-column>
 											<el-table-column prop="name" :label="$t('paramsName')" width="200"></el-table-column>
 											<el-table-column :label="$t('paramsDescription')">
 												<template slot-scope="scope">
