@@ -76,6 +76,7 @@ export default {
 	loadProjectListSucceeded: '加载项目列表成功!',
 	loadFailed: '加载失败',
 	loadFailedTips: '加载项目信息失败,更多信息请查看控制台',
+	loadFailedDocumentIsInvalid: '加载失败,该文档无效或无法识别!',
 	requestProxyFailed: '代理请求失败',
 	requestProxyFailedTips: '代理请求项目信息失败,更多信息请查看控制台',
 	tips: '提示',

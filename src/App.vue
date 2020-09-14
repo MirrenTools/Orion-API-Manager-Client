@@ -1012,7 +1012,7 @@ export default {
 				if (openapi != null && openapi.startsWith('3.')) {
 					var orionData = swaggerConvert(data);
 					if (orionData == null) {
-						this.$message.error('加载项目,该文档无效或无法识别!');
+						this.$message.error(this.$t('loadFailedDocumentIsInvalid'));
 						return;
 					}
 					console.log('load Open API:');
@@ -1020,7 +1020,7 @@ export default {
 				} else if (swagger != null && swagger.startsWith('2.')) {
 					var orionData = swaggerConvert(data);
 					if (orionData == null) {
-						this.$message.error('加载项目,该文档无效或无法识别!');
+						this.$message.error(this.$t('loadFailedDocumentIsInvalid'));
 						return;
 					}
 					console.log('load Swagger:');
@@ -1030,7 +1030,7 @@ export default {
 				}
 			} catch (err) {
 				this.projectLoading = false;
-				this.$message.error('加载项目信息失败,更多信息请查看控制台!');
+				this.$message.error(this.$t('loadFailedTips'));
 				console.log(err);
 			}
 		},

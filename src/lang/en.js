@@ -75,6 +75,7 @@ export default {
 	loadProjectListSucceeded: 'Loading project list succeeded',
 	loadFailed: 'Load failed',
 	loadFailedTips: 'Failed to load project, more information can be found in browser console',
+	loadFailedDocumentIsInvalid: 'Load failed. The document is invalid or unrecognized!',
 	requestProxyFailed: 'Request Failed',
 	requestProxyFailedTips: 'Proxy request project failed, more information can be found in browser console',
 	tips: 'tips',
@@ -82,5 +83,6 @@ export default {
 	copySucceeded: 'Copy successful',
 	urlCannotBeEmpty: 'URL cannot be empty',
 	responseHeaderTips: 'The header customized by the agent may not be displayed. You can open the browser console to view the header returned by the server',
-	moreInfoTips: 'See browser console for more information'	
+	moreInfoTips: 'See browser console for more information',
+	
 }
