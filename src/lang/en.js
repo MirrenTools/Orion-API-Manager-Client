@@ -1,4 +1,7 @@
 export default {
+	Login: 'Login',
+	LoginTimeout: 'Login timeout',
+	Tips: 'Tips',
 	fileUrl: 'Document URL,Proxy add P: Example P:https://xxx.xxx/xx',
 	load: 'Load',
 	localFile: 'Local file',
@@ -84,5 +87,14 @@ export default {
 	urlCannotBeEmpty: 'URL cannot be empty',
 	responseHeaderTips: 'The header customized by the agent may not be displayed. You can open the browser console to view the header returned by the server',
 	moreInfoTips: 'See browser console for more information',
-	
+	ResultStatus0:'Unknown error',
+	ResultStatus200:'Succeeded',
+	ResultStatus202:'The operation is complete, but you need to check whether it is successful',
+	ResultStatus401:'Login timeout, please login again',
+	ResultStatus402:'Login failed, invalid account or password',
+	ResultStatus403:'Illegal operation or no permission,if you have the permission, please login again',
+	ResultStatus404:'The resource does not exist',
+	ResultStatus412:'Please fill in all required parameters',
+	ResultStatus500:'Failed',	
+	ResultStatus555:'Failed. Please try again later. Please check the console for more information',	
 }

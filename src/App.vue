@@ -398,7 +398,7 @@
 									<div v-if="item.schema" style="border: 1px solid #EBEEF5;"><json-viewer :expand-depth="10" :value="item.schema" /></div>
 									<div v-show="item.data && item.data.length > 0">
 										<el-table :data="item.data" row-key="tableRowkey" border default-expand-all :tree-props="{ children: 'items', hasChildren: 'hasChildren' }">
-											<el-table-column  prop="in" :label="$t('paramsPosition')" width="150" align="right"></el-table-column>
+											<el-table-column prop="in" :label="$t('paramsPosition')" width="150" align="right"></el-table-column>
 											<el-table-column prop="type" :label="$t('paramsType')" width="120" align="right"></el-table-column>
 											<el-table-column prop="name" :label="$t('paramsName')" width="200"></el-table-column>
 											<el-table-column :label="$t('paramsDescription')">
@@ -459,8 +459,12 @@
 import { getParams } from './utils/URLParams.js';
 import swaggerConvert from './utils/ConvertSwaggerDocs.js';
 import JsonViewer from 'vue-json-viewer';
+import { findProjectListAPI, getProjectAPI } from '@/api/Project';
 import axios from 'axios';
 import qs from 'qs';
+
+// 本地存储的会话的token
+const LS_KEY_SESSION_TOKEN = 'LS_KEY_SESSION_TOKEN';
 // API服务器地址
 const SERVER_HOST = process.env.VUE_APP_BASE_API;
 // xml与json转换器
@@ -475,6 +479,8 @@ export default {
 	},
 	data() {
 		return {
+			/**会话的token*/
+			sessionToken: '',
 			//是否显示侧边栏
 			isAsideShow: true,
 			//是否显示内容
@@ -558,6 +564,28 @@ export default {
 				executing: false
 			}
 		};
+	},
+	created() {
+		//如果id不为空就加载项目加载项目
+		var pid = getParams('id', window.location.href);
+		var fileUrl = getParams('fileUrl', window.location.href);
+		var token = getParams('token', window.location.href);
+		if (token != null) {
+			this.sessionToken = token;
+			localStorage.setItem(LS_KEY_SESSION_TOKEN, token);
+		} else {
+			this.sessionToken = localStorage.getItem(LS_KEY_SESSION_TOKEN) || '';
+		}
+		console.log(this.sessionToken);
+		if (pid != null && pid != '') {
+			this.projectId = pid;
+			this.getProject(this.projectId);
+		} else if (fileUrl != null && fileUrl != '') {
+			this.fileUrl = fileUrl;
+			this.getProjectFromUrl();
+		}
+		//加载项目列表
+		this.loadProjectList();
 	},
 	methods: {
 		/**
@@ -871,27 +899,25 @@ export default {
 		 * 加载所有项目
 		 */
 		loadProjectList() {
-			var tis = this;
-			axios
-				.get(SERVER_HOST + '/project/')
-				.then(res => {
+			findProjectListAPI(
+				this.sessionToken,
+				res => {
 					var data = res.data;
+					console.log('Loading project list ...');
+					console.log(data);
 					if (data.code === 200) {
-						console.log('Loading project list succeeded!');
-						tis.projects = data.data;
-						tis.api.proxy = true;
-					} else {
-						console.log('Loading project list failed:');
-						console.log(res);
+						this.projects = data.data;
+						this.api.proxy = true;
 					}
-				})
-				.catch(err => {
+				},
+				err => {
 					console.log('Loading project list failed:');
 					console.log(err);
-				});
+				}
+			);
 		},
 		/**
-		 * 通过id加载项目信息
+		 * 通过Orion的项目id加载项目信息
 		 * @param {String} id
 		 */
 		getProject(id) {
@@ -900,22 +926,27 @@ export default {
 			}
 			var i18nTitle = this.$t('loadFailed');
 			var i18nTips = this.$t('loadFailedTips');
-			var tis = this;
-			axios
-				.get(SERVER_HOST + '/project/getJson/' + id)
-				.then(res => {
+			getProjectAPI(
+				id,
+				this.sessionToken,
+				res => {
 					var data = res.data;
+					if (data.code != null && data.code != 200) {
+						return;
+					}
+					console.log('load project...');
 					console.log(data);
-					tis.loadDocument(data);
-				})
-				.catch(err => {
-					tis.$notify.error({
+					this.loadDocument(data);
+				},
+				err => {
+					this.$notify.error({
 						title: i18nTitle,
 						message: i18nTips,
 						position: 'bottom-right'
 					});
 					console.log(err);
-				});
+				}
+			);
 		},
 		/**
 		 * 通过URL加载项目信息
@@ -1040,7 +1071,9 @@ export default {
 		 * @param {Object} data
 		 */
 		loadProject(data) {
-			if (data == null || '{}' == JSON.stringify(data)) {
+			console.log('data');
+			console.log(data);
+			if (data == null || data == '' || '{}' == JSON.stringify(data)) {
 				return;
 			}
 			this.projectId = data.key;
@@ -1057,7 +1090,7 @@ export default {
 			this.project.name = data.name;
 			this.project.versions = data.versions;
 			this.project.description = data.description;
-			if (data.servers == null || data.servers == '') {
+			if ((data.servers == null || data.servers == '') && (data.schemes != null && data.schemes != '')) {
 				this.project.schemes = data.schemes;
 				var servers = [];
 				for (var i = 0; i < data.schemes.length; i++) {
@@ -1073,7 +1106,17 @@ export default {
 			} else {
 				this.project.servers = data.servers;
 			}
-			if (this.project.servers.length > 0) {
+			if (this.project.servers == null && data.content == null) {
+				this.$notify({
+					title: this.$t('tips'),
+					message: this.$t('loadFailedDocumentIsInvalid'),
+					type: 'error',
+					position: 'bottom-left',
+					duration: 6000
+				});
+				return;
+			}
+			if (this.project.servers != null && this.project.servers.length > 0) {
 				this.selectServer = this.project.servers[0].url;
 			}
 			this.project.contactName = data.contactName;
@@ -1082,14 +1125,12 @@ export default {
 			this.project.lastTime = data.lastTime;
 			this.apiGroups = data.content;
 
-			var i18nTips = this.$t('tips');
-			var i18nLoadSucceeded = this.$t('loadSucceeded');
 			this.$notify({
-				title: i18nTips,
-				message: i18nLoadSucceeded,
+				title: this.$t('tips'),
+				message: this.$t('loadSucceeded'),
 				type: 'success',
 				position: 'bottom-left',
-				duration: 1000
+				duration: 3000
 			});
 		},
 		copy() {
@@ -1309,20 +1350,6 @@ export default {
 					console.log('request error: ');
 					console.log(err);
 				});
-		}
-	},
-	created() {
-		//加载项目列表
-		this.loadProjectList();
-		//如果id不为空就加载项目加载项目
-		var pid = getParams('id', window.location.href);
-		var fileUrl = getParams('fileUrl', window.location.href);
-		if (pid != null && pid != '') {
-			this.projectId = pid;
-			this.getProject(this.projectId);
-		} else if (fileUrl != null && fileUrl != '') {
-			this.fileUrl = fileUrl;
-			this.getProjectFromUrl();
 		}
 	},
 	mounted() {

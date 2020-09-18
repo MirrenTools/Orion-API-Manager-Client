@@ -1,4 +1,7 @@
 export default {
+	Login: '登录',
+	LoginTimeout: '登录超时',
+	Tips:'提示',
 	fileUrl: '文档的URL,代理请求可加上P: 示例:P:https://xxx.xxx/xx',
 	load: '加载',
 	localFile: '本地加载',
@@ -85,4 +88,14 @@ export default {
 	urlCannotBeEmpty: 'URL 不能为空!',
 	responseHeaderTips: '使用代理自定义的header可能不显示,你可以打开控制台查看服务器返回的header',
 	moreInfoTips: '更多信息请查看浏览器控制台!',
+	ResultStatus0:'未知错误',
+	ResultStatus200:'成功',
+	ResultStatus202:'操作完成,但需要你检查是否成功',
+	ResultStatus401:'登录超时,请重新登录',
+	ResultStatus402:'登录失败,账号或密码错误',
+	ResultStatus403:'非法操作或者没有权限,如果你有该权限请重新登录',
+	ResultStatus404:'资源不存在',
+	ResultStatus412:'请按要求填写所有必填项!',
+	ResultStatus500:'失败',
+	ResultStatus555:'失败,请稍后重试,更多信息请查看控制台',
 }
