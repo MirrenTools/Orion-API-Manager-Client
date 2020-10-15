@@ -375,7 +375,7 @@
 									</el-table-column>
 									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
 										<template slot-scope="scope">
-											<el-input :placeholder="$t('inputParamsValue')" v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
+											<el-input :placeholder="$t('inputParamsValue')"  v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -750,8 +750,9 @@ export default {
 					param.join = param.required == true || param.required == 'true';
 					var val = variables[param.in + '-' + param.name];
 					if (val != null) {
-						param.value = val;
+						this.$set(param,'value',val);
 					}
+					
 					var contains = '';
 					if (param.default != null && param.default != '') {
 						contains += i18nDef + param.default + '　';
