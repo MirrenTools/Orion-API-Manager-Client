@@ -375,7 +375,7 @@
 									</el-table-column>
 									<el-table-column prop="value" :label="$t('paramsValue')" min-width="200">
 										<template slot-scope="scope">
-											<el-input :placeholder="$t('inputParamsValue')"  v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
+											<el-input :placeholder="$t('inputParamsValue')" v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
 										</template>
 									</el-table-column>
 								</el-table>
@@ -750,9 +750,9 @@ export default {
 					param.join = param.required == true || param.required == 'true';
 					var val = variables[param.in + '-' + param.name];
 					if (val != null) {
-						this.$set(param,'value',val);
+						this.$set(param, 'value', val);
 					}
-					
+
 					var contains = '';
 					if (param.default != null && param.default != '') {
 						contains += i18nDef + param.default + '　';
@@ -900,6 +900,9 @@ export default {
 		 * 加载所有项目
 		 */
 		loadProjectList() {
+			if (this.sessionToken == null || this.sessionToken.trim() == '') {
+				return;
+			}
 			findProjectListAPI(
 				this.sessionToken,
 				res => {
@@ -956,48 +959,48 @@ export default {
 			if (this.fileUrl.trim() === '') {
 				return;
 			}
-			var tis = this;
-			var i18nTitle = this.$t('loadFailed');
-			var i18nTips = this.$t('loadFailedTips');
-			var i18nProxyFailed = this.$t('requestProxyFailed');
-			var i18nProxyFailedTips = this.$t('requestProxyFailedTips');
-
-			var urls = tis.fileUrl;
+			var urls = this.fileUrl;
 			if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
 				urls = urls.substring(2);
 				axios
 					.get(SERVER_HOST + '/proxy/project?url=' + urls)
 					.then(res => {
 						if (res.data.code == 200) {
-							tis.loadDocument(JSON.parse(res.data.data));
+							this.loadDocument(JSON.parse(res.data.data));
+						} else if (res.data.code == 403) {
+							this.$notify.error({
+								title: this.$t('requestProxyFailed'),
+								message: this.$t('ResultStatus403'),
+								position: 'bottom-right'
+							});
 						} else {
-							tis.$notify.error({
-								title: i18nProxyFailed,
-								message: i18nProxyFailedTips,
+							this.$notify.error({
+								title: this.$t('requestProxyFailed'),
+								message: this.$t('requestProxyFailedTips'),
 								position: 'bottom-right'
 							});
 							console.log(res);
 						}
 					})
 					.catch(err => {
-						tis.$notify.error({
-							title: i18nProxyFailed,
-							message: i18nProxyFailedTips,
+						this.$notify.error({
+							title: this.$t('requestProxyFailed'),
+							message: this.$t('requestProxyFailedTips'),
 							position: 'bottom-right'
 						});
 						console.log(err);
 					});
 			} else {
 				axios
-					.get(tis.fileUrl)
+					.get(this.fileUrl)
 					.then(res => {
 						var data = res.data;
-						tis.loadDocument(data);
+						this.loadDocument(data);
 					})
 					.catch(err => {
-						tis.$notify.error({
-							title: i18nTitle,
-							message: i18nTips,
+						this.$notify.error({
+							title: this.$t('loadFailed'),
+							message: this.$t('loadFailedTips'),
 							position: 'bottom-right'
 						});
 						console.log(err);
@@ -1011,16 +1014,13 @@ export default {
 			var reader = new FileReader();
 			var file = this.$refs.readFile.files[0];
 			reader.readAsText(file);
-			var tis = this;
-			var i18nTitle = this.$t('loadFailed');
-			var i18nTips = this.$t('loadFailedTips');
-			reader.onload = function(res) {
+			reader.onload = res => {
 				try {
-					tis.loadDocument(JSON.parse(res.target.result));
+					this.loadDocument(JSON.parse(res.target.result));
 				} catch (err) {
-					tis.$notify.error({
-						title: i18nTitle,
-						message: i18nTips,
+					this.$notify.error({
+						title: this.$t('loadFailed'),
+						message: this.$t('loadFailedTips'),
 						position: 'bottom-right'
 					});
 					console.log(err);
@@ -1235,8 +1235,7 @@ export default {
 				}
 			}
 
-			var tis = this;
-			tis.api.executing = true;
+			this.api.executing = true;
 			var requestData = {};
 			requestData.method = method;
 			if (isProxy) {
@@ -1244,7 +1243,7 @@ export default {
 				requestData.headers = {};
 				if (header != null) {
 					for (var key in header) {
-						tis.api.requestHenders[key] = header[key];
+						this.api.requestHenders[key] = header[key];
 					}
 					requestData.headers['x-header'] = JSON.stringify(header);
 				}
@@ -1254,7 +1253,7 @@ export default {
 				if (header != null) {
 					requestData.headers = header;
 					for (var key in header) {
-						tis.api.requestHenders[key] = header[key];
+						this.api.requestHenders[key] = header[key];
 					}
 				}
 			}
@@ -1317,36 +1316,36 @@ export default {
 
 			axios(requestData)
 				.then(res => {
-					tis.api.isSxecute = true;
-					tis.api.executing = false;
-					tis.api.response = res.data;
-					tis.api.responseHeaders.status = res.status;
+					this.api.isSxecute = true;
+					this.api.executing = false;
+					this.api.response = res.data;
+					this.api.responseHeaders.status = res.status;
 					if (isProxy && header != null) {
-						tis.api.responseHeaders.tips = this.$t('responseHeaderTips');
+						this.api.responseHeaders.tips = this.$t('responseHeaderTips');
 					} else {
-						delete tis.api.responseHeaders.tips;
+						delete this.api.responseHeaders.tips;
 					}
 					for (var key in res.headers) {
-						tis.api.responseHeaders[key] = res.headers[key];
+						this.api.responseHeaders[key] = res.headers[key];
 					}
 					console.log('request result:');
 					console.log(res);
 				})
 				.catch(err => {
-					tis.api.isSxecute = true;
-					tis.api.executing = false;
+					this.api.isSxecute = true;
+					this.api.executing = false;
 					if (err.headers) {
 						for (var key in err.headers) {
-							tis.api.responseHeaders[key] = err.headers[key];
+							this.api.responseHeaders[key] = err.headers[key];
 						}
 					}
 					if (err.response != null && err.response.data != null) {
-						tis.api.response = err.response.data;
+						this.api.response = err.response.data;
 					} else {
 						var error = {};
-						error.tips = tis.$t('moreInfoTips');
+						error.tips = this.$t('moreInfoTips');
 						error.error = err;
-						tis.api.response = error;
+						this.api.response = error;
 					}
 					console.log('request error: ');
 					console.log(err);
@@ -1354,11 +1353,10 @@ export default {
 		}
 	},
 	mounted() {
-		var tis = this;
-		tis.isAsideShow = document.body.offsetWidth > 768;
-		window.onresize = function() {
-			tis.isAsideShow = document.body.offsetWidth > 768;
-			tis.isMainShow = true;
+		this.isAsideShow = document.body.offsetWidth > 768;
+		window.onresize = () => {
+			this.isAsideShow = document.body.offsetWidth > 768;
+			this.isMainShow = true;
 		};
 	}
 };

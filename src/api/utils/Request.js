@@ -4,6 +4,8 @@ import {
 	MessageBox,
 	Message
 } from 'element-ui'
+// 本地存储的会话的token键
+const LS_KEY_SESSION_TOKEN = 'LS_KEY_SESSION_TOKEN';
 
 const request = axios.create({
 	baseURL: process.env.VUE_APP_BASE_API,
@@ -27,6 +29,8 @@ request.interceptors.response.use(res => {
 				type: 'warning'
 			}).then(() => {
 				location.href = '/';
+			}).catch(err=>{
+				localStorage.removeItem(LS_KEY_SESSION_TOKEN);
 			});
 			return res;
 		} else if (code == 403) {
