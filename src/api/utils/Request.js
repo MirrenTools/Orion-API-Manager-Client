@@ -28,7 +28,7 @@ request.interceptors.response.use(res => {
 				confirmButtonText: i18n.t('Login'),
 				type: 'warning'
 			}).then(() => {
-				location.href = '/';
+				location.href = '/console/index.html#/login';
 			}).catch(err=>{
 				localStorage.removeItem(LS_KEY_SESSION_TOKEN);
 			});
@@ -38,8 +38,11 @@ request.interceptors.response.use(res => {
 				confirmButtonText: i18n.t('Login'),
 				type: 'warning'
 			}).then(() => {
-				location.href = '/';
+				location.href = '/console/index.html#/login';
 			});
+			return res;
+		} else if (code == 404) {
+			Message.error(i18n.t('ResultStatus404'));
 			return res;
 		} else if (code == 412) {
 			Message.warning(i18n.t('ResultStatus412'));
