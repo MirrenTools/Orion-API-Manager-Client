@@ -963,7 +963,7 @@ export default {
 			if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
 				urls = urls.substring(2);
 				axios
-					.get(SERVER_HOST + '/proxy/project?url=' + urls)
+					.get(SERVER_HOST + '/proxy/project?url=' + urls+"&token="+this.sessionToken)
 					.then(res => {
 						if (res.data.code == 200) {
 							this.loadDocument(JSON.parse(res.data.data));
