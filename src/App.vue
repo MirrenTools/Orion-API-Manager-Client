@@ -573,6 +573,8 @@ export default {
 		if (token != null) {
 			this.sessionToken = token;
 			localStorage.setItem(LS_KEY_SESSION_TOKEN, token);
+			var url= window.location.href.replace("token="+token,"");
+			window.history.pushState({}, 0, url);
 		} else {
 			this.sessionToken = localStorage.getItem(LS_KEY_SESSION_TOKEN) || '';
 		}
@@ -1248,6 +1250,7 @@ export default {
 					requestData.headers['x-header'] = JSON.stringify(header);
 				}
 				requestData.headers['x-url'] = url;
+				requestData.headers['x-session'] = this.sessionToken;
 			} else {
 				requestData.url = url;
 				if (header != null) {
