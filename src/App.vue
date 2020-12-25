@@ -573,6 +573,7 @@ export default {
 		if (token != null) {
 			this.sessionToken = token;
 			localStorage.setItem(LS_KEY_SESSION_TOKEN, token);
+			window.location.href=window.location.href.replace('token='+token,'');
 		} else {
 			this.sessionToken = localStorage.getItem(LS_KEY_SESSION_TOKEN) || '';
 		}
