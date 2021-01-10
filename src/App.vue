@@ -952,7 +952,7 @@ export default {
 						this.api.proxy = false;
 						localStorage.setItem(LS_KEY_SHARE_PREFIX + sid,pwd);
 						this.loadDocument(JSON.parse(data.data));
-					} else {
+					} else if (data.code === 405){
 						localStorage.removeItem(LS_KEY_SHARE_PREFIX + sid);
 						this.$message.error(this.$t('ViewPasswordIncorrect'));
 						this.initProjectShare(sid, 1);
