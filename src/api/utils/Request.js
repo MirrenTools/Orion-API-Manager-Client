@@ -44,6 +44,8 @@ request.interceptors.response.use(res => {
 		} else if (code == 404) {
 			Message.error(i18n.t('ResultStatus404'));
 			return res;
+		}else if (code == 405) {
+			return res;
 		} else if (code == 412) {
 			Message.warning(i18n.t('ResultStatus412'));
 			return res;

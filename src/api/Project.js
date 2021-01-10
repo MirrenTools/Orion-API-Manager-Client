@@ -28,3 +28,19 @@ export function getProjectAPI(pid, token, res, err) {
 		}
 	}).then(res).catch(err);
 }
+
+/**
+ * 获取分享项目
+ * @param {String} pid 分享的id
+ * @param {String} pwd 查看的密码
+ * @param {Object} resLL
+ * @param {Object} err
+ */
+export function getProjectShareAPI(sid, pwd, res, err) {
+	request.get('/project/share', {
+		params: {
+			sid: sid,
+			pwd: pwd
+		}
+	}).then(res).catch(err);
+}
