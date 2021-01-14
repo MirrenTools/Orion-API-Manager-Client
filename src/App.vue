@@ -267,7 +267,7 @@
 							</div>
 						</div>
 						<!-- 请求参数 -->
-						<div class="api-body-params" v-if="menuSubCurrent != 999999">
+						<div class="api-body-params" >
 							<div class="api-body-param-header">
 								<div style="display: flex;">{{ $t('requestParams') }}</div>
 								<div style="display: flex;align-items: first baseline;">
