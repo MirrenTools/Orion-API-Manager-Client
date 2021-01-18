@@ -267,7 +267,7 @@
 							</div>
 						</div>
 						<!-- 请求参数 -->
-						<div class="api-body-params" >
+						<div class="api-body-params">
 							<div class="api-body-param-header">
 								<div style="display: flex;">{{ $t('requestParams') }}</div>
 								<div style="display: flex;align-items: first baseline;">
@@ -1293,7 +1293,7 @@
 						}
 					}
 				}
-				this.api.executing = true;
+
 				var requestData = {};
 				requestData.method = method;
 				if (isProxy) {
@@ -1332,7 +1332,17 @@
 					if (type.indexOf('xml') != -1) {
 						contentType = 'application/xml';
 						if (useBody) {
-							requestData.data = xmlBuilder.buildObject(body);
+							try {
+								requestData.data = xmlBuilder.buildObject(body);
+							} catch (e) {
+								this.$notify.error({
+									title: this.$t('tips'),
+									message: e,
+									position: 'bottom-right'
+								});
+
+								return;
+							}
 						} else {
 							requestData.data = body;
 						}
@@ -1371,6 +1381,8 @@
 						requestData.headers['Content-Type'] = contentType;
 					}
 				}
+
+				this.api.executing = true;
 				axios(requestData)
 					.then(res => {
 						this.api.isSxecute = true;
