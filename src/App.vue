@@ -1422,11 +1422,11 @@
 			}
 		},
 		mounted() {
-			this.isAsideShow = document.body.offsetWidth > 768;
-			window.onresize = () => {
-				this.isAsideShow = document.body.offsetWidth > 768;
-				this.isMainShow = true;
-			};
+			// this.isAsideShow = document.body.offsetWidth > 768;
+			// window.onresize = () => {
+			// 	this.isAsideShow = document.body.offsetWidth > 768;
+			// 	this.isMainShow = true;
+			// };
 		}
 	};
 </script>
@@ -1496,7 +1496,7 @@
 		display: flex;
 		align-items: center;
 	}
-
+/* 
 	@media screen and (max-width: 768px) {
 		#mobile-bar {
 			display: block !important;
@@ -1518,7 +1518,7 @@
 		.xs-left-sm-rigth {
 			text-align: left;
 		}
-	}
+	} */
 
 	/* 手机导航栏 */
 	#mobile-bar {
