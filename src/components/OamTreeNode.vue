@@ -29,7 +29,8 @@
 	.oam_tree_node_default {
 		word-wrap: break-word;
 		padding: 5px;
-		margin-left: 50px;
+		margin-left: 42px;
+		border-left: 3px solid transparent;
 	}
 
 	.oam_tree_node_default:hover {

@@ -212,6 +212,7 @@
 				<div v-show="menuSubCurrent != -1">
 					<div class="api-body" :class="['api-body-' + api.method]">
 						<div class="prem05" v-if="api.deprecated">{{ api.deprecated ? $t('apiDeprecated') : '' }}</div>
+						
 						<div v-if="menuSubCurrent != 999999" class="api-header" :class="['api-header-' + api.method]" :style="api.deprecated ? 'text-decoration: line-through;' : ''">
 							<div class="api-header-item">{{ api.title }}</div>
 							<div class="api-header-item">{{ $t('apiMethod') }}: {{ api.methodUpperCase }}</div>

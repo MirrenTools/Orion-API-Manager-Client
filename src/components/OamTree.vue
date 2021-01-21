@@ -121,6 +121,7 @@
 		padding: 5px;
 		padding-left: 3px;
 		cursor: pointer;
+		border-left: 3px solid transparent;
 		width: 100%
 	}
 

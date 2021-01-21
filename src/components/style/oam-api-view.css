@@ -1,0 +1,207 @@
+/* 通用样式 */
+	a {
+		text-decoration: none;
+		color: #304455;
+	}
+	
+	img {
+		border: none;
+	}
+	
+	.body-max-width {
+		max-width: 1240px;
+	}
+	
+	.xs-left-sm-rigth {
+		text-align: right;
+	}
+	
+	.mb10px {
+		margin-bottom: 10px;
+	}
+	
+	.prem05 {
+		padding: 0.5rem;
+	}
+	
+	.plrrem05 {
+		padding: 0 0.5rem;
+	}
+	
+	.background-color-white {
+		background-color: white;
+	}
+	
+.flexCenter {
+	display: flex;
+	align-items: center;
+}
+.api-body {
+	border: 1px solid #3b4151;
+	background-color: #f5f7fa;
+	margin-bottom: 50px;
+}
+
+.api-body .api-header {
+	background-color: #3b4151;
+	font-size: 1.25rem;
+	color: white;
+	padding: 0.3125rem 0.625rem;
+}
+
+.api-body-get {
+	background-color: #ebf3fb;
+	border: 1px solid #61affe;
+}
+
+.api-body .api-header-get {
+	background-color: #61affe;
+}
+
+.api-body-post {
+	background-color: #e8f6f0;
+	border: 1px solid #49cc90;
+}
+
+.api-body .api-header-post {
+	background-color: #49cc90;
+}
+
+.api-body-put {
+	background-color: #fbf1e6;
+	border: 1px solid #fca130;
+}
+
+.api-body .api-header-put {
+	background-color: #fca130;
+}
+
+.api-body-delete {
+	background-color: #fae7e7;
+	border: 1px solid #f93e3e;
+}
+
+.api-body .api-header-delete {
+	background-color: #f93e3e;
+}
+
+.api-body-head {
+	background-color: #f4e7ff;
+	border: 1px solid #9012fe;
+}
+
+.api-body .api-header-head {
+	background-color: #9012fe;
+}
+
+.api-body-options {
+	background-color: #e6eef6;
+	border: 1px solid #0d5aa7;
+}
+
+.api-body .api-header-options {
+	background-color: #0d5aa7;
+}
+
+.api-body-patch {
+	background-color: #edfcf9;
+	border: 1px solid #50e3c2;
+}
+
+.api-body .api-header-patch {
+	background-color: #50e3c2;
+}
+
+.api-body-trace {
+	background-color: #ffe9e6;
+	border: 1px solid #ffa8be;
+}
+
+.api-body .api-header-trace {
+	background-color: #ffa8be;
+}
+
+.api-body-connect {
+	background-color: #e6f6f1;
+	border: 1px solid #83bb83;
+}
+
+.api-body .api-header-connect {
+	background-color: #83bb83;
+}
+
+.api-body .api-header .api-header-item {
+	line-height: 2.5rem;
+}
+
+.api-body .api-body-param-header {
+	padding: 0.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: first baseline;
+	justify-content: space-between;
+}
+
+.api-body .api-body-result-header {
+	padding: 0.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: first baseline;
+	justify-content: space-between;
+}
+
+.api-body .api-body-response-header {
+	padding: 0.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: first baseline;
+	justify-content: space-between;
+}
+
+.api-body .api-body-response-body {
+	color: white;
+	background-color: #18181a;
+	padding: 0 0.5rem 0.5rem 0.5rem;
+	display: flex;
+}
+
+.api-body .api-body-response-body .el-tabs__item {
+	color: white;
+}
+
+.api-body .api-body-response-body .el-tabs__item.is-active {
+	color: #409eff;
+}
+
+.api-body .api-body-response-body .el-divider__text {
+	background-color: #18181a;
+	color: #409eff;
+}
+
+.api-body .api-body-response-body .jv-container {
+	background-color: #18181a;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light {
+	color: white;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-object {
+	color: white;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-array {
+	color: white;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-string {
+	color: #ff7de9;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-item.jv-boolean {
+	color: gold;
+}
+
+.api-body .api-body-response-body .jv-container.jv-light .jv-key {
+	color: #409eff;
+}
