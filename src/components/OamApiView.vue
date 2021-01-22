@@ -9,13 +9,13 @@
 				<div class="api-header-item" style="display: flex;flex-wrap: wrap;">
 					<div class="flexCenter">{{ $t('requestURL') }}:&nbsp;</div>
 					<div style="width: 90%;" class="flexCenter">
-						<a-input v-model="api.path">
-							<a-select slot="addonBefore" v-model="requestServer">
-								<a-select-option v-for="(s, idx) in servers" :key="idx" :value="s.url">{{ s.url }}</a-select-option>
-							</a-select>
-							<span slot="addonAfter" style="display: inline-block;padding-right: 10px;cursor: pointer;" @click="copy">Copy</span>
-							<span slot="addonAfter" style="display: inline-block;padding-left: 10px;cursor: pointer;" @click="copyPath">CopyPath</span>
-						</a-input>
+						<el-input :placeholder="$t('InputHostAndPath')" size="mini" v-model="api.path">
+							<el-select v-model="requestServer" slot="prepend" :placeholder="$t('SelectOrAdd')" style="width: 200px;" filterable allow-create>
+								<el-option v-for="(s, idx) in servers" :key="idx" :label="s.url" :value="s.url"></el-option>
+							</el-select>
+							<el-button slot="append" style="color: #222;" @click="copy">Copy</el-button>
+							<el-button slot="append" style="color: #222;" @click="copyPath">CopyPath</el-button>
+						</el-input>
 					</div>
 				</div>
 			</div>
@@ -43,47 +43,54 @@
 					<div style="display: flex;">{{ $t('RequestParams') }}</div>
 					<div style="display: flex;align-items: first baseline;">
 						<span style="margin-right: 10px;">{{ $t('RequestType') }}</span>
-						<a-select v-model="api.requestType" style="min-width: 200px;">
-								<a-select-option v-for="(type, idx) in api.consumes" :key="idx" :value="type">{{type }}</a-select-option>
-						</a-select>
+						<el-select v-model="api.requestType" size="mini"  :placeholder="$t('SelectOrAdd')" filterable allow-create>
+							<el-option v-for="(type, idx) in api.consumes" :key="idx" :label="type" :value="type"></el-option>
+						</el-select>
 					</div>
 				</div>
+				<!-- 默认请求的参数 -->
 				<div class="api-body-param-path plrrem05">
-					<!-- 默认请求的参数 -->
-					<a-table :data-source="api.parameters" childrenColumnName="items" style="background-color: white;">
-						<a-table-column key="join" :title="$t('ParamsJoin')">
-							<template slot-scope="text, record" >
-								{{record.join}}
+					<el-table
+						v-if="api.parameters && api.parameters.length > 0"
+						ref="requestParamsTable"
+						:data="api.parameters"
+						row-key="tableRowkey"
+						default-expand-all
+						:tree-props="{ children: 'items', hasChildren: 'hasChildren' }"
+						tooltip-effect="dark"
+						style="width: 100%"
+						:empty-text="$t('requestParamsEnpty')"
+					>
+						<el-table-column prop="join" :label="$t('ParamsJoin')" width="50" align="center">
+							<template slot-scope="scope">
+								<el-checkbox
+									v-if="scope.row.join != null"
+									v-model="scope.row.join"
+									:id="'api-parameters-join-' + scope.$index"
+									@click.native.prevent="changeCheckBoxSelect('api-parameters-join-' + scope.$index, scope.row)"
+								></el-checkbox>
 							</template>
-						</a-table-column>
-						<a-table-column key="required" :title="$t('ParamsRequired')">
-							<template slot-scope="text, record" v-if="record.required != null">
-								{{ record.required == true || record.required == 'true' ? $t('TheTrue') : $t('TheFalse') }}
+						</el-table-column>
+						<el-table-column prop="required" :label="$t('ParamsRequired')" width="60">
+							<template slot-scope="scope" v-if="scope.row.required != null">
+								{{ scope.row.required == true || scope.row.required == 'true' ? $t('TheTrue') : $t('TheFalse') }}
 							</template>
-						</a-table-column>
-						<a-table-column key="type" :title="$t('ParamsType')"></a-table-column>
-						<a-table-column key="name" :title="$t('ParamsName')"></a-table-column>
-						<a-table-column key="value" :title="$t('ParamsValue')"></a-table-column>
-						<a-table-column key="description" :title="$t('ParamsValue')">
-							<template  slot-scope="text, record" >
-								<div v-html="record.description"></div>
-								<div v-if="record.contains != ''" v-html="record.contains"></div>
+						</el-table-column>
+						<el-table-column prop="in" :label="$t('ParamsPosition')" width="100"></el-table-column>
+						<el-table-column prop="type" :label="$t('ParamsType')" width="100"></el-table-column>
+						<el-table-column prop="name" :label="$t('ParamsName')" min-width="100"></el-table-column>
+						<el-table-column prop="value" :label="$t('ParamsValue')" min-width="200">
+							<template slot-scope="scope">
+								<el-input v-if="scope.row.join != null" :placeholder="$t('inputParamsValue')" v-model="scope.row.value" @blur="paramsBlurHandler(scope.row)"></el-input>
 							</template>
-						</a-table-column>
-			<!-- 			<a-table-column key="action" title="Action"></a-table-column>
-						<a-table-column key="action" title="Action"></a-table-column>
-						<a-table-column key="action" title="Action"></a-table-column>
-						<a-table-column key="action" title="Action">
-							<template slot-scope="text, record">
-								<span>
-									<a>Action 一 {{ record.firstName }}</a>
-									<a-divider type="vertical" />
-									<a>Delete</a>
-								</span>
+						</el-table-column>
+						<el-table-column :label="$t('ParamsDescription')" min-width="250">
+							<template slot-scope="scope">
+								<div v-html="scope.row.description"></div>
+								<div v-if="scope.row.contains != ''" v-html="scope.row.contains"></div>
 							</template>
-						</a-table-column> -->
-					</a-table>
-					
+						</el-table-column>
+					</el-table>
 				</div>
 			</div>
 		</div>

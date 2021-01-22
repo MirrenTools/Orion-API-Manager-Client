@@ -2,61 +2,41 @@
 	<div id="app">
 		<!-- 顶部导航栏 -->
 		<div id="header">
+			<!-- 侧边栏控制器 -->
+			<div id="collapse">
+				<i class="el-icon-s-fold" v-show="asideCollapse" @click="asideCollapse = !asideCollapse"></i>
+				<i class="el-icon-s-unfold" v-show="!asideCollapse" @click="asideCollapse = !asideCollapse"></i>
+			</div>
 			<!-- 项目的名称 -->
-			<div style="padding-left: 15px;width: 420px;">
-				<b style="cursor: pointer;">
-					<a-icon type="setting" />
-					项目的名称
-				</b>
+			<div id="project-title">
+				<div><i class="el-icon-s-tools"></i></div>
+				<div><b>项目的名称项目的名称项目的名称项目的名称项目的名</b></div>
 			</div>
 			<!-- 请求加载等按钮 -->
 			<div style="margin-left: auto;margin-right: 12px;display: flex;align-items: center;justify-content: end;width: 70%;">
-				<div style="width: 50%;">
-					<a-input-search placeholder="文档的URL,代理请求可加上P: 示例:P:https://xxx.xxx/xx" size="large" @search="onSearch">
-						<a-button slot="enterButton" class="link-color">请求加载</a-button>
-					</a-input-search>
+				<div style="width: 50%;" class="mini-screen-mide">
+					<el-input :placeholder="$t('FileUrl')" v-model="fileUrl" class="input-with-select">
+						<el-button slot="append">{{ $t('RequestLoad') }}</el-button>
+					</el-input>
 				</div>
-				<div>
-					<a-button type="link" block class="link-color">
-						<a-icon type="folder-open" />
-						本地加载
-					</a-button>
-				</div>
-				<div>
-					<a-button type="link" block class="link-color">
-						<a-icon type="link" />
-						请求测试
-					</a-button>
-				</div>
-				<div>
-					<a-button type="link" block class="link-color">
-						<a-icon type="home" />
-						进入控制台
-					</a-button>
-				</div>
+				<div class="nav-item mini-screen-mide"><el-button type="text" icon="el-icon-folder-opened" class="nav-item-color">本地加载</el-button></div>
+				<div class="nav-item"><el-button type="text" icon="el-icon-link" class="nav-item-color">请求测试</el-button></div>
+				<div class="nav-item"><el-button type="text" icon="el-icon-box" class="nav-item-color">进入控制台</el-button></div>
 			</div>
 		</div>
-		<a-layout>
-			<!-- 侧边栏 -->
-			<a-layout-sider width="400" breakpoint="lg" collapsed-width="0" theme="light">
-				<div style="overflow: auto;height: 100vh;">
-					<div style="height: 65px;"></div>
-					<OamTree :data="groups" :selectHandler="apiSelectHandler" :selectId="selectApiId"></OamTree>
+		<el-container>
+			<el-aside width="400px" style="overflow: auto;height: 100vh;" v-show="asideCollapse">
+				<div style="height: 65px;"></div>
+				<OamTree :data="groups" :selectHandler="apiSelectHandler" :selectId="selectApiId"></OamTree>
+			</el-aside>
+			<el-main style="height: 100vh;overflow-y: auto;">
+				<div style="height: 61px;"></div>
+				<div>
+					<!-- API信息 -->
+					<OamApiView :api="selectAPI" :defaultServer="selectServer" :servers="project.servers"></OamApiView>
 				</div>
-			</a-layout-sider>
-			<a-layout>
-				<!-- Main -->
-				<a-layout-content>
-					<div style="overflow-y: auto;height: 100vh;background-color: white;width: 100%;word-wrap:break-word;">
-						<div style="height: 61px;"></div>
-						<div style="padding: 10px;">
-							<!-- API信息 -->
-							<OamApiView :api="selectAPI" :defaultServer="selectServer" :servers="project.servers"></OamApiView>
-						</div>
-					</div>
-				</a-layout-content>
-			</a-layout>
-		</a-layout>
+			</el-main>
+		</el-container>
 	</div>
 </template>
 
@@ -71,12 +51,16 @@ export default {
 	},
 	data() {
 		return {
+			/**是否折叠侧边栏*/
+			asideCollapse: true,
+			/**网络请求的URL*/
+			fileUrl: '',
 			/**当前加载的项目*/
-			project:{
-				servers:[{url:'http://127.0.0.1:8080'},{url:'https://127.0.0.1:8080'},{url:'http://127.0.0.1:8081/8081/8081/8081'}],
+			project: {
+				servers: [{ url: 'http://127.0.0.1:8080' }, { url: 'https://127.0.0.1:8080' }, { url: 'http://127.0.0.1:8081/8081/8081/8081' }]
 			},
 			/**默认选中要使用的服务器*/
-			selectServer:'http://127.0.0.1:8080',
+			selectServer: 'http://127.0.0.1:8080',
 			/**当前选择API的id*/
 			selectApiId: 'id-4',
 			/**当前选择的API*/
@@ -85,7 +69,7 @@ export default {
 				method: 'get',
 				groupId: '818fc57f-379d-48df-b307-a942560620e1',
 				deprecated: false,
-				description: 'appid为填写应用的包名',
+				description: '项目的描述',
 				responses: [
 					{
 						msg: 'ok',
@@ -173,7 +157,12 @@ export default {
 			]
 		};
 	},
-	created() {},
+	created() {
+		this.asideCollapse = document.body.offsetWidth > 768;
+		window.onresize = () => {
+			this.asideCollapse = document.body.offsetWidth > 768;
+		};
+	},
 	methods: {
 		apiSelectHandler(id) {
 			this.selectApiId = id;
@@ -187,17 +176,26 @@ export default {
 </script>
 
 <style>
+.el-main {
+	padding: 14px !important;
+}
+
+@media screen and (max-width: 768px) {
+	#header #collapse {
+		display: block !important;
+	}
+	#header #project-title {
+		white-space: normal !important;
+	}
+	.mini-screen-mide {
+		display: none;
+	}
+}
 #app {
 	font-family: Avenir, Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	color: #2c3e50;
-}
-
-.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
-	background-color: #e6f7ff !important;
-	border-radius: 0 !important;
-	border-left: 3px solid #1890ff !important;
 }
 
 #header {
@@ -214,7 +212,24 @@ export default {
 	align-items: center;
 }
 
-#header .link-color {
+#header .nav-item {
+	padding-left: 20px;
+}
+#header .nav-item-color {
 	color: #2c3e50;
+}
+
+#header #collapse {
+	display: none;
+	padding-left: 10px;
+	font-size: 30px;
+}
+#header #project-title {
+	width: 380px;
+	padding-left: 8px;
+	display: flex;
+	cursor: pointer;
+	align-items: center;
+	white-space: nowrap;
 }
 </style>
