@@ -9,7 +9,7 @@
 						</svg>
 					</div>
 				</div>
-				<div class="oam_tree_group_title" @click="click(item.id)" :class="{ oam_tree_select: currentId == item.id }">
+				<div class="oam_tree_group_title" @click="click(item.id)" :class="{ oam_tree_select: selectId == item.id }">
 					<b>{{ item.title }}</b>
 				</div>
 			</div>
@@ -22,7 +22,7 @@
 						:title="li.title"
 						@updateCurrentId="updateCurrentId"
 						:selectHandler="selectHandler"
-						:class="{ oam_tree_select: currentId == li.id }"
+						:class="{ oam_tree_select: selectId == li.id }"
 					></OamTreeNode>
 				</div>
 			</transition>
@@ -54,8 +54,6 @@ export default {
 	},
 	data() {
 		return {
-			/**当前选中的id*/
-			currentId: null,
 			/**节点张开与关闭的情况*/
 			expands: {}
 		};
@@ -66,12 +64,10 @@ export default {
 			var show = exp[i].show || true;
 			this.$set(this.expands, exp[i].id, show);
 		}
-		this.currentId = this.selectId;
 	},
 	methods: {
 		/**点击事件*/
 		click(id) {
-			this.currentId = id;
 			this.selectHandler(id);
 		},
 		/**展开或关闭事件*/
@@ -88,7 +84,7 @@ export default {
 		 * @param {Object} id
 		 */
 		updateCurrentId(id) {
-			this.currentId = id;
+			this.$emit('apiSelectHandler', id);
 		}
 	}
 };

@@ -2,13 +2,13 @@
 	<div>
 		<div class="api-body" :class="['api-body-' + api.method]">
 			<!-- API基本信息 -->
-			<div class="prem05" v-if="api.deprecated">{{ api.deprecated ? $t('apiDeprecated') : '' }}</div>
+			<div class="prem05" v-if="api.deprecated">{{ api.deprecated ? $t('ApiDeprecated') : '' }}</div>
 			<div class="api-header" :class="['api-header-' + api.method]" :style="api.deprecated ? 'text-decoration: line-through;' : ''">
 				<div class="api-header-item">{{ api.title }}</div>
-				<div class="api-header-item">{{ $t('apiMethod') }}: {{ api.method.toUpperCase() }}</div>
+				<div class="api-header-item">{{ $t('ApiMethod') }}: {{ api.method.toUpperCase() }}</div>
 				<div class="api-header-item" style="display: flex;flex-wrap: wrap;">
-					<div class="flexCenter">{{ $t('requestURL') }}:&nbsp;</div>
-					<div style="width: 90%;" class="flexCenter">
+					<div class="flexCenter">{{ $t('RequestURL') }}:</div>
+					<div style="width: 90%;margin-left: 10px;" class="flexCenter">
 						<el-input :placeholder="$t('InputHostAndPath')" size="mini" v-model="api.path">
 							<el-select v-model="requestServer" slot="prepend" :placeholder="$t('SelectOrAdd')" style="width: 200px;" filterable allow-create>
 								<el-option v-for="(s, idx) in servers" :key="idx" :label="s.url" :value="s.url"></el-option>
@@ -43,7 +43,7 @@
 					<div style="display: flex;">{{ $t('RequestParams') }}</div>
 					<div style="display: flex;align-items: first baseline;">
 						<span style="margin-right: 10px;">{{ $t('RequestType') }}</span>
-						<el-select v-model="api.requestType" size="mini"  :placeholder="$t('SelectOrAdd')" filterable allow-create>
+						<el-select v-model="api.requestType" size="mini" style="width: 200px;" :placeholder="$t('SelectOrAdd')" filterable allow-create>
 							<el-option v-for="(type, idx) in api.consumes" :key="idx" :label="type" :value="type"></el-option>
 						</el-select>
 					</div>
@@ -59,7 +59,7 @@
 						:tree-props="{ children: 'items', hasChildren: 'hasChildren' }"
 						tooltip-effect="dark"
 						style="width: 100%"
-						:empty-text="$t('requestParamsEnpty')"
+						:empty-text="$t('RequestParamsEnpty')"
 					>
 						<el-table-column prop="join" :label="$t('ParamsJoin')" width="50" align="center">
 							<template slot-scope="scope">
@@ -124,11 +124,6 @@ export default {
 		},
 		copy() {
 			var data = this.requestServer + this.api.path;
-			console.log('copy:data=' + data);
-			this.toCopy(data);
-		},
-		copyCustom() {
-			var data = this.api.path;
 			console.log('copy:data=' + data);
 			this.toCopy(data);
 		},

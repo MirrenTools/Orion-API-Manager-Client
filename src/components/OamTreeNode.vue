@@ -18,7 +18,6 @@
 		methods: {
 			/**点击事件*/
 			click() {
-				this.$emit('updateCurrentId', this.id);
 				this.selectHandler(this.id);
 			}
 		}
