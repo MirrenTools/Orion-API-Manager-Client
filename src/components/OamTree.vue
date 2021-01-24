@@ -1,9 +1,10 @@
 <template>
 	<div class="oam_tree">
-		<div class="oam_tree_group" v-for="item in data" :key="item.id">
+		<div v-if="data==null||data.length==0" style="text-align: center;">{{emptyText}}</div>
+		<div v-else class="oam_tree_group" v-for="item in data" :key="item.id">
 			<div style="display: flex;">
 				<div>
-					<div @click="expand(item.id)" :class="['oam_tree_group_icon', expands[item.id] == true ? 'oam_tree_group_icon_expand' : '']">
+					<div @click="expand(item)" :class="['oam_tree_group_icon', (item.show ? 'oam_tree_group_icon_expand' : '')]">
 						<svg viewBox="0 0 1024 1024" data-icon="caret-right" width="1em" height="1em" fill="currentColor" aria-hidden="true" focusable="false">
 							<path d="M715.8 493.5L335 165.1c-14.2-12.2-35-1.2-35 18.5v656.8c0 19.7 20.8 30.7 35 18.5l380.8-328.4c10.9-9.4 10.9-27.6 0-37z"></path>
 						</svg>
@@ -14,7 +15,7 @@
 				</div>
 			</div>
 			<transition name="slide-fade">
-				<div v-show="expands[item.id]">
+				<div v-show="item.show">
 					<OamTreeNode
 						v-for="li in item.apis"
 						:key="li.id"
@@ -45,6 +46,8 @@ export default {
 				return [];
 			}
 		},
+		/**没有数据时显示的文字*/
+		emptyText:String,
 		/**已选中的节点*/
 		selectId: String,
 		/**点击节点的事件,参数:id*/
@@ -52,31 +55,17 @@ export default {
 		/**展开与关闭事件,参数:id,type:(true=展开,false=收起)*/
 		expandHandler: Function
 	},
-	data() {
-		return {
-			/**节点张开与关闭的情况*/
-			expands: {}
-		};
-	},
-	created() {
-		var exp = this.data || [];
-		for (var i = 0; i < exp.length; i++) {
-			var show = exp[i].show || true;
-			this.$set(this.expands, exp[i].id, show);
-		}
-	},
 	methods: {
 		/**点击事件*/
 		click(id) {
 			this.selectHandler(id);
 		},
 		/**展开或关闭事件*/
-		expand(id) {
-			console.log('expand: ' + id);
-			var type = !this.expands[id];
-			this.$set(this.expands, id, type);
+		expand(item) {
+			var type = !item.show;
+			item.show=type;
 			if (this.expandHandler != null) {
-				this.expandHandler(id, type);
+				this.expandHandler(item.id, type);
 			}
 		},
 		/**
@@ -104,7 +93,8 @@ export default {
 	opacity: 0;
 }
 .oam_tree {
-	mzx-width: 100%;
+	max-width: 100%;
+	min-height: 70%;
 	cursor: pointer;
 }
 

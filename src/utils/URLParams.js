@@ -1,4 +1,9 @@
+/**
+ * @param {Object} name 参数的名称
+ * @param {Object} url window.location.search
+ */
 export function getParams(name, url) {
-	return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url) || [, ""])[1].replace(
-		/\+/g, '%20')) || null
+	var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+	var result = url.substr(1).match(reg);
+	return result ? decodeURIComponent(result[2]) : null;
 }

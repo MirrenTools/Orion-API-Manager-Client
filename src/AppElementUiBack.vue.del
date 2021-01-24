@@ -1469,9 +1469,6 @@
 		border: none;
 	}
 
-	.body-max-width {
-		max-width: 1240px;
-	}
 
 	.xs-left-sm-rigth {
 		text-align: right;

@@ -15,7 +15,7 @@ const request = axios.create({
 //响应拦截器
 request.interceptors.response.use(res => {
 		var code = res.data.code;
-		if(code==null){
+		if (code == null) {
 			return res;
 		}
 		if (code == 200) {
@@ -29,7 +29,8 @@ request.interceptors.response.use(res => {
 				type: 'warning'
 			}).then(() => {
 				location.href = '/console/index.html#/login';
-			}).catch(err=>{
+			}).catch(err => {
+				window.console.log(err)
 				localStorage.removeItem(LS_KEY_SESSION_TOKEN);
 			});
 			return res;
@@ -44,7 +45,7 @@ request.interceptors.response.use(res => {
 		} else if (code == 404) {
 			Message.error(i18n.t('ResultStatus404'));
 			return res;
-		}else if (code == 405) {
+		} else if (code == 405) {
 			return res;
 		} else if (code == 412) {
 			Message.warning(i18n.t('ResultStatus412'));
