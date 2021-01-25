@@ -100,6 +100,8 @@ const SERVER_HOST = process.env.VUE_APP_BASE_API;
 const LS_KEY_SESSION_TOKEN = 'LS_KEY_SESSION_TOKEN';
 // 本地存储的分享账号密码前缀
 const LS_KEY_SHARE_PREFIX = 'LS_SHARE_KEY';
+// 会话存储的选择的分组或API前缀
+const SS_KEY_SHARE_PREFIX = 'SS_SELECT_GA_KEY';
 // 主页显示的类型-项目
 const MAIN_SHOW_MODE_PROJECT = 'PROJECT';
 
@@ -281,6 +283,7 @@ export default {
 		switchToProjectView() {
 			this.mainShowMode = MAIN_SHOW_MODE_PROJECT;
 			this.selectApiId = '';
+			sessionStorage.removeItem(SS_KEY_SHARE_PREFIX+this.project.projectId);
 		},
 		/**
 		 * 切换到请求测试
@@ -288,6 +291,7 @@ export default {
 		switchToRequestView() {
 			this.mainShowMode = 'REQUEST_TEST';
 			this.selectApiId = '';
+			sessionStorage.removeItem(SS_KEY_SHARE_PREFIX+this.project.projectId);
 		},
 		/**
 		 * 初始化分享项目
@@ -560,9 +564,9 @@ export default {
 				position: 'bottom-right',
 				duration: 3000
 			});
+			this.mainShowMode = MAIN_SHOW_MODE_PROJECT;
 			this.loadGroupsAndApi(data.content);
 			this.updateProjectViewData();
-			this.mainShowMode = MAIN_SHOW_MODE_PROJECT;
 		},
 		/**
 		 * 更新ProjectView子组件的一些信息
@@ -648,6 +652,7 @@ export default {
 			this.groupsIsLoading = true;
 			if (data == null || data.length == 0) {
 				console.log('group is empty!');
+				this.groupsIsLoading = false;
 				return;
 			}
 			for (let i = 0; i < data.length; i++) {
@@ -666,6 +671,10 @@ export default {
 				this.groups.push({ id: gid, title: data[i].name, show: true, apis: apis });
 			}
 			this.groupsIsLoading = false;
+			let sid= sessionStorage.getItem(SS_KEY_SHARE_PREFIX+this.project.projectId);
+			if(sid!=null&&sid!=''){
+				this.apiSelectHandler(sid);
+			}
 		},
 		/**
 		 * API分组与API选中事件
@@ -823,6 +832,7 @@ export default {
 					data.loaded = 1;
 					this.selectApi = api;
 				}
+				sessionStorage.setItem(SS_KEY_SHARE_PREFIX+this.project.projectId,this.selectApiId);
 			}
 		},
 		/**
