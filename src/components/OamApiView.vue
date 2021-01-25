@@ -111,7 +111,7 @@
 					<div v-for="(item, idx) in api.responses" :key="idx">
 						<div class="api-body-result-header">
 							<div style="display: flex;">{{ $t('ResponseStatusCode') }}: {{ item.status }}</div>
-							<div style="display: flex;align-items: first baseline;">{{ item.msg }}&nbsp;</div>
+							<div style="display: flex;align-items: first baseline;">{{ item.msg }}</div>
 						</div>
 						<div class="plrrem05">
 							<div v-if="item.schema" style="border: 1px solid #EBEEF5;"><json-viewer :expand-depth="10" :value="item.schema" /></div>
