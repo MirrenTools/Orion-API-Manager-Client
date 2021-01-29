@@ -788,12 +788,11 @@ export default {
 					} else {
 						api.parameters = [];
 					}
-
 					if (api.responses != null && api.responses.length > 0 && (api.responses[0].status == null || api.responses[0].data == null)) {
 						api.responses = [
 							{
 								status: 200,
-								data: data.responses
+								data: api.responses
 							}
 						];
 					}
