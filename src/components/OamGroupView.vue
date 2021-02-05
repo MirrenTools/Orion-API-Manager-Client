@@ -12,13 +12,13 @@
 			<tr v-if="group.description">
 				<td align="right" valign="top"><b>{{ $t('GroupDescription') }}</b></td>
 				<td>
-					<div v-html="group.description"></div>
+					<div v-html="(group.description||'').replace(/\n/g, '<br>')"></div>
 				</td>
 			</tr>
 			<tr v-if="group.externalDocs">
 				<td align="right" valign="top"><b>{{ $t('AdditionalDocument') }}</b></td>
 				<td>
-					<div v-html="group.externalDocs.description"></div>
+					<div v-html="(group.externalDocs.description||'').replace(/\n/g, '<br>')"></div>
 					<div style="margin-top: 10px;"><a :href="group.externalDocs.url" style="color: #409EFF;" target="_blank">{{ group.externalDocs.url }}</a></div>
 				</td>
 			</tr>

@@ -21,14 +21,14 @@
 				<td align="right" valign="top">
 					<b>{{ $t('Description') }}</b>
 				</td>
-				<td><div v-html="project.description"></div></td>
+				<td><div v-html="(project.description||'').replace(/\n/g, '<br>')"></div></td>
 			</tr>
 			<tr v-if="project.externalDocs">
 				<td align="right" valign="top">
 					<b>{{ $t('AdditionalDocument') }}</b>
 				</td>
 				<td>
-					<div v-html="project.externalDocs.description"></div>
+					<div v-html="(project.externalDocs.description||'').replace(/\n/g, '<br>')"></div>
 					<div style="margin-top: 10px;">
 						<a :href="project.externalDocs.url" style="color: #409EFF;" target="_blank">{{ project.externalDocs.url }}</a>
 					</div>
@@ -44,7 +44,7 @@
 				<td align="right" valign="top">
 					<b>{{ $t('ContactsInfo') }}</b>
 				</td>
-				<td><div v-html="project.contactInfo"></div></td>
+				<td><div v-html="(project.contactInfo||'').replace(/\n/g, '<br>')"></div></td>
 			</tr>
 			<tr>
 				<td align="right" valign="top">

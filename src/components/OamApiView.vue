@@ -21,19 +21,19 @@
 			</div>
 			<!-- 接口的描述 -->
 			<div class="prem05 background-color-white">
-				<div v-html="api.description"></div>
+				<div v-html="(api.description||'').replace(/\n/g, '<br>')"></div>
 				<div v-for="(addi, index) in api.additional" :key="index">
 					<div style="margin-top: 5px;">
 						<b>{{ addi.title }}</b>
 					</div>
-					<div v-html="addi.description.replace(/\n/g, '<br>')"></div>
+					<div v-html="(addi.description||'').replace(/\n/g, '<br>')"></div>
 				</div>
 				<div v-if="api.externalDocs" style="margin-top: 0.5rem;">
 					<div style="padding-right: 0.5rem;">
 						<b>{{ $t('AdditionalDocument') }}:</b>
 					</div>
 					<div>
-						{{ api.externalDocs.description }}
+						<div v-html="(api.externalDocs.description||'').replace(/\n/g, '<br>')"></div>
 						<br />
 						<a :href="api.externalDocs.url" style="color: #409EFF;" target="_blank">{{ api.externalDocs.url }}</a>
 					</div>
@@ -100,7 +100,7 @@
 						</el-table-column>
 						<el-table-column :label="$t('ParamsDescription')" min-width="250">
 							<template slot-scope="scope">
-								<div v-html="scope.row.description"></div>
+								<div v-html="(scope.row.description||'').replace(/\n/g, '<br>')"></div>
 								<div v-if="scope.row.contains != ''" v-html="scope.row.contains"></div>
 							</template>
 						</el-table-column>
@@ -122,7 +122,7 @@
 									<el-table-column prop="name" :label="$t('ParamsName')" width="200"></el-table-column>
 									<el-table-column :label="$t('ParamsDescription')">
 										<template slot-scope="scope">
-											<div v-html="scope.row.description"></div>
+											<div v-html="(scope.row.description||'').replace(/\n/g, '<br>')"></div>
 										</template>
 									</el-table-column>
 								</el-table>
