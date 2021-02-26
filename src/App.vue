@@ -724,7 +724,6 @@ export default {
 					if (api.parameters != null) {
 						for (let i = 0; i < api.parameters.length; i++) {
 							let param = api.parameters[i];
-							this.recursionApiParamDataCreateId(param);
 							param.join = param.required == true || param.required == 'true';
 							//默认值
 							let defValue = variables[param.in + '-' + param.name];
@@ -784,6 +783,7 @@ export default {
 							if (contains != '') {
 								param.contains = contains;
 							}
+							this.recursionApiParamDataCreateId(param);
 						}
 					} else {
 						api.parameters = [];
