@@ -244,18 +244,19 @@ export default function(docs) {
 				api.parameters = [];
 				if (adata.parameters != null) {
 					for (let i = 0; i < adata.parameters.length; i++) {
-						loadParametersSchema(api.parameters, adata.parameters[i], refs);
+						loadParametersSchema(api, api.parameters, adata.parameters[i], refs);
 					}
 				}
 
-
 				if (adata.requestBody != null && adata.requestBody.content != null) {
-					if (adata.requestBody.content['application/json'] != null && adata.requestBody.content['application/json'].schema !=
-						null) {
-						let schema = adata.requestBody.content['application/json'].schema;
-						loadRequestBody(api.parameters, schema, refs);
+					if (adata.requestBody.content['application/json'] != null && adata.requestBody.content['application/json'].schema != null) {
+						let schema = adata.requestBody.content['application/json'];
+						loadRequestBody(api, api.parameters, schema, refs);
+					} else if (adata.requestBody.content['*/*'] != null && adata.requestBody.content['*/*'].schema != null) {
+						let schema = adata.requestBody.content['*/*'];
+						loadRequestBody(api, api.parameters, schema, refs);
 					} else {
-						api.body = fillSchemaRef(adata.requestBody, refs);
+						api.body = JSON.stringify(fillSchemaRef(adata.requestBody, refs));
 					}
 				}
 
@@ -357,20 +358,20 @@ export default function(docs) {
 
 	/**
 	 * 将parameters的Schema加载到OrionRequest中data中,如果是body数据则将body返回
+	 * @param {Object} api API的基本信息
 	 * @param {Object} requestData OrionRequest 的数据
 	 * @param {Object} fromSchema 要需要转换加载的数据
 	 * @param {Object} refs 可引用的对象集
 	 */
-	function loadParametersSchema(parameter, fromSchema, refs) {
+	function loadParametersSchema(api, parameter, fromSchema, refs) {
 		let schema;
 		if (fromSchema['$ref'] != null) {
 			schema = JSON.parse(JSON.stringify(refs[fromSchema['$ref']]));
 		} else {
 			schema = JSON.parse(JSON.stringify(fromSchema))
 		}
-
 		if (schema['in'] == 'body') {
-			loadRequestBody(parameter, schema, refs);
+			loadRequestBody(api, parameter, schema, refs);
 			return;
 		}
 
@@ -447,14 +448,26 @@ export default function(docs) {
 	}
 	/**
 	 * 将body参数加载到Orion的请求参数
-	 * @param {Object} parameter
+	 * @param {Object} api API的基本信息
+	 * @param {Object} parameter API的请求参数
 	 * @param {Object} fromSchema
 	 * @param {Object} refs
 	 */
-	function loadRequestBody(parameter, fromSchema, refs) {
+	function loadRequestBody(api, parameter, fromSchema, refs) {
 		let schema;
-		if (fromSchema.schema != null && fromSchema['$ref'] != null) {
-			let ref = refs[fromSchema['$ref']];
+		let schemaType;
+		if (fromSchema.schema != null) {
+			schemaType = fromSchema.schema.type;
+			let ref;
+			if (fromSchema.schema['$ref'] != null) {
+				ref = refs[fromSchema.schema['$ref']];
+			} else if (fromSchema.schema['items'] != null) {
+				if (fromSchema.schema.items['$ref'] != null) {
+					ref = refs[fromSchema.schema.items['$ref']];
+				}
+			} else {
+				ref = fromSchema.schema;
+			}
 			if (ref == null) {
 				fromSchema['in'] = 'body';
 				if (fromSchema['default'] != null) {
@@ -488,6 +501,23 @@ export default function(docs) {
 			item.type = getSchemaDataType(item) || '';
 			parameter.push(item);
 		}
+		if ('array' == schemaType) {
+			let body = '[{';
+			for (let i = 0; i < items.length; i++) {
+				let item = items[i];
+				if (i > 0) {
+					body += ',';
+				}
+				body += '"' + item['name'] + '":';
+				if ('string' == item['type']) {
+					body += '"' + (item['default'] == null ? ('{' + item['name'] + '}') : item['default']) + '"';
+				} else {
+					body += (item['default'] == null ? ('{' + item['name'] + '}') : item['default']);
+				}
+			}
+			body += '}]';
+			api.body = body;
+		}
 	}
 
 
@@ -499,7 +529,7 @@ export default function(docs) {
 	 * @param {Object} refs 属性引用
 	 */
 	function loadParameterProperties(items, properties, required, refs) {
-		if (refs)console.log();
+		if (refs) console.log();
 		for (let pkey in properties) {
 			let pdata = null;
 			pdata = properties[pkey];

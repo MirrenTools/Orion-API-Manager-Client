@@ -105,13 +105,13 @@
 							</template>
 						</el-table-column>
 					</el-table>
+					<div style="padding-top: 0.5rem;"><el-input v-model="api.body" v-show="api.body!=null" type="textarea" :autosize="{ minRows: 2, maxRows: 10 }" :placeholder="$t('RequestBody')"></el-input></div>
 				</div>
 				<!-- 响应数据 -->
 				<div class="api-body-result">
 					<div v-for="(item, idx) in api.responses" :key="idx">
 						<div class="api-body-result-header">
-							<div style="display: flex;">{{ $t('ResponseStatusCode') }}: {{ item.status }}</div>
-							<div style="display: flex;align-items: first baseline;">{{ item.msg }}</div>
+							<div style="display: flex;">{{ $t('ResponseStatusCode') }}: {{ item.status }} - {{ item.msg }}</div>
 						</div>
 						<div class="plrrem05">
 							<div v-if="item.schema" style="border: 1px solid #EBEEF5;"><json-viewer :expand-depth="10" :value="item.schema" /></div>
@@ -138,6 +138,9 @@
 					<div style="display: flex;flex-wrap: wrap;align-items: center;">
 						<div style="margin-right: 0.7rem;" v-if="isNotShareMode">
 							<el-checkbox v-model="api.proxy">{{ $t('UseProxy') }}</el-checkbox>
+						</div>
+						<div style="margin-right: 0.7rem;">
+							<el-input v-model.number="api.executeTimeout" :placeholder="$t('Timeout')" size="mini" style="width: 80px;"></el-input>
 						</div>
 						<div>
 							<el-button type="primary" @click="execute" :loading="api.executing">{{ api.executing ? $t('Executing') : $t('Execute') }}</el-button>
@@ -256,11 +259,11 @@ export default {
 			if (data.in != 'body') {
 				return;
 			}
-			let body = this.body;
+			let body = this.api.body;
 			if (body == null || body == '') {
 				return;
 			}
-			this.body = body.replace(new RegExp('{' + data.name + '}', 'g'), data.value);
+			this.api.body = body.replace(new RegExp('{' + data.name + '}', 'g'), data.value);
 		},
 		execute() {
 			let isProxy = this.api.proxy;
@@ -320,6 +323,11 @@ export default {
 			}
 
 			let requestData = {};
+			let timeout= parseInt(this.api.executeTimeout);
+			if(isNaN(timeout)){
+				timeout=10000;
+			}
+			requestData.timeout=timeout;
 			requestData.method = method;
 			if (isProxy) {
 				requestData.url = SERVER_HOST + '/proxy/server';

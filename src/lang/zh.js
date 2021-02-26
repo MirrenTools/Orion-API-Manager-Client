@@ -1,6 +1,7 @@
 export default {
 	Login: '登录',
 	LoginTimeout: '登录超时',
+	Timeout:'超时时间',
 	Tips: '提示',
 	FileUrl: '文档的URL,代理请求可加上P: 示例:P:https://xxx.xxx/xx',
 	RequestLoad: '请求加载',

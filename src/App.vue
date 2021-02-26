@@ -827,6 +827,7 @@ export default {
 					if (api.response == null) {
 						api.response = {};
 					}
+					api.executeTimeout=null;
 					api.servers = this.project.servers;
 					data.loaded = 1;
 					this.selectApi = api;

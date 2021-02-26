@@ -110,6 +110,9 @@
 						<div style="margin-right: 0.7rem;" v-if="isNotShareMode">
 							<el-checkbox v-model="isProxy">{{ $t('UseProxy') }}</el-checkbox>
 						</div>
+						<div style="margin-right: 0.7rem;">
+							<el-input v-model.number="executeTimeout" :placeholder="$t('Timeout')" size="mini" style="width: 80px;"></el-input>
+						</div>
 						<div>
 							<el-button type="primary" @click="execute" :loading="executing">{{ executing ? $t('Executing') : $t('Execute') }}</el-button>
 						</div>
@@ -194,6 +197,8 @@ export default {
 			isSxecute: false,
 			//是否正在请求中
 			executing: false,
+			/**默认请求超时时间*/
+			executeTimeout:null,
 			//请求结果的切换标签
 			responseTags: 'format'
 		};
@@ -327,6 +332,7 @@ export default {
 			}
 
 			var requestData = {};
+			requestData.timeout=this.executeTimeout||10000;
 			requestData.method = method;
 			if (isProxy) {
 				requestData.url = SERVER_HOST + '/proxy/server';
@@ -442,9 +448,12 @@ export default {
 					if (err.response != null && err.response.data != null) {
 						this.api.response = err.response.data;
 					} else {
-						var error = {};
+						let error = {};
 						error.tips = this.$t('MoreInfoTips');
-						error.error = err;
+						error.error = {
+							message:err.message,
+							config:err.config
+						};
 						this.api.response = error;
 					}
 					console.log('request error: ');
