@@ -19,9 +19,9 @@ export default function(docs) {
 					url: s.url,
 					description: s.description
 				}];
-				if (s.letiables != null) {
-					for (let key in s.letiables) {
-						let val = s.letiables[key];
+				if (s.variables != null) {
+					for (let key in s.variables) {
+						let val = s.variables[key];
 						let def = val.default;
 						if (def == null) {
 							continue;
