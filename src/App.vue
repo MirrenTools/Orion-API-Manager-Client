@@ -31,7 +31,7 @@
 				</div>
 			</div>
 		</div>
-		<el-container>
+		<el-container v-loading="dataLoading">
 			<el-aside width="400px" style="overflow: auto;height: 100vh;" v-show="asideCollapse">
 				<div style="height: 65px;"></div>
 				<!-- 小屏幕显示加载项目 -->
@@ -126,6 +126,8 @@ export default {
 			fileUrl: '',
 			/**网络请求的文档是否正在加载中*/
 			fileUrlLoading: false,
+			/**资源正在加载中*/
+			dataLoading:false,
 			/**Main中要显示的内容:PROJECT=项目,GROUP=分组,REQUEST_TEST=请求测试,API=API*/
 			mainShowMode: MAIN_SHOW_MODE_PROJECT,
 			/**当前加载的项目*/
@@ -327,6 +329,7 @@ export default {
 		 * @param {Object} pwd 分享的密码
 		 */
 		getProjectShare(sid, pwd) {
+			this.dataLoading=true;
 			getProjectShareAPI(
 				sid,
 				pwd,
@@ -342,8 +345,10 @@ export default {
 						this.$message.error(this.$t('ViewPasswordIncorrect'));
 						this.initProjectShare(sid, 1);
 					}
+					this.dataLoading=false;
 				},
 				err => {
+					this.dataLoading=false;
 					console.log('Loading project list failed:');
 					console.log(err);
 				}
@@ -357,6 +362,7 @@ export default {
 			if (id == null || id == '') {
 				return;
 			}
+			this.dataLoading=true;
 			getProjectAPI(
 				id,
 				this.sessionToken,
@@ -374,6 +380,7 @@ export default {
 						position: 'bottom-right'
 					});
 					console.log(err);
+					this.dataLoading=false;
 				}
 			);
 		},
@@ -494,6 +501,7 @@ export default {
 				this.$message.error(this.$t('LoadFailedTips'));
 				console.log(err);
 			}
+			this.dataLoading=false;
 		},
 		/**
 		 * 加载项目信息
@@ -503,6 +511,7 @@ export default {
 		loadProject(data) {
 			console.log(data);
 			if (data == null || data == '' || '{}' == JSON.stringify(data)) {
+				this.dataLoading=false;
 				return;
 			}
 			//清除历史数据
@@ -564,6 +573,7 @@ export default {
 				position: 'bottom-right',
 				duration: 3000
 			});
+			this.dataLoading=false;
 			this.mainShowMode = MAIN_SHOW_MODE_PROJECT;
 			this.loadGroupsAndApi(data.content);
 			this.updateProjectViewData();
