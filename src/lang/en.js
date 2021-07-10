@@ -7,6 +7,8 @@ export default {
 	RequestLoad: 'Request load',
 	LocalFile: 'Local file',
 	RequestTest: 'Request test',
+	GoToConsole:'Go to console',
+	DataLoading:'Data loading...',
 	SelectOrAdd: 'Please select or add',
 	Project: 'Project',
 	ProjectNotLoaded: 'Project not loaded',

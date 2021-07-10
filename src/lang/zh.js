@@ -7,6 +7,8 @@ export default {
 	RequestLoad: '请求加载',
 	LocalFile: '本地加载',
 	RequestTest: '请求测试',
+	GoToConsole:'进入控制台',
+	DataLoading:'数据正在加载中...',
 	SelectOrAdd: '请选择或新增',
 	Project: '项目',
 	ProjectNotLoaded: '尚未加载项目',
