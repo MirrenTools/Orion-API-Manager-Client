@@ -3,7 +3,7 @@ export default {
 	LoginTimeout: 'Login timeout',
 	Timeout:'Timeout',
 	Tips: 'Tips',
-	FileUrl: 'Document URL,Proxy add P: Example P:https://xxx.xxx/xx',
+	FileUrl: 'The URL of the project document',
 	RequestLoad: 'Request load',
 	LocalFile: 'Local file',
 	RequestTest: 'Request test',
