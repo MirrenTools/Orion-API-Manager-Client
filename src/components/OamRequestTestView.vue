@@ -107,7 +107,7 @@
 						<span v-show="isSxecute">{{ $t('ResponseResult') }}</span>
 					</div>
 					<div style="display: flex;flex-wrap: wrap;align-items: center;">
-						<div style="margin-right: 0.7rem;" v-if="isNotShareMode">
+						<div style="margin-right: 0.7rem;" v-if="enableProxy">
 							<el-checkbox v-model="isProxy">{{ $t('UseProxy') }}</el-checkbox>
 						</div>
 						<div style="margin-right: 0.7rem;">
@@ -163,8 +163,8 @@ export default {
 		JsonViewer
 	},
 	props: {
-		/**非使用分享模式浏览*/
-		isNotShareMode: Boolean,
+		/**是否允许代理请求*/
+		enableProxy: Boolean,
 		/**回话的token*/
 		sessionToken: String
 	},

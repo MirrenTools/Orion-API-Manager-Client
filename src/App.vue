@@ -17,8 +17,11 @@
 			<!-- 请求加载等按钮 -->
 			<div v-if="isNotShareMode"
 				style="margin-left: auto;margin-right: 12px;display: flex;align-items: center;justify-content: end;width: 70%;">
+
 				<div style="width: 50%;" class="mini-screen-mide">
 					<el-input :placeholder="$t('FileUrl')" v-model="fileUrl" class="input-with-select">
+						<el-checkbox slot="prepend" v-if="enableProxy" v-model="fileUrlProxy">{{ $t('UseProxy') }}
+						</el-checkbox>
 						<el-button slot="append" :loading="fileUrlLoading" @click="getProjectFromUrl">
 							{{ $t('RequestLoad') }}
 						</el-button>
@@ -84,12 +87,12 @@
 					</div>
 					<!-- 请求测试视图 -->
 					<div v-show="mainShowMode == 'REQUEST_TEST'">
-						<OamRequestTestView :isNotShareMode="isNotShareMode" :sessionToken="sessionToken">
+						<OamRequestTestView :enableProxy="enableProxy" :sessionToken="sessionToken">
 						</OamRequestTestView>
 					</div>
 					<!-- API视图 -->
 					<div v-show="mainShowMode == 'API'">
-						<OamApiView :api="selectApi" :isNotShareMode="isNotShareMode" :sessionToken="sessionToken">
+						<OamApiView :api="selectApi" :enableProxy="enableProxy" :sessionToken="sessionToken">
 						</OamApiView>
 					</div>
 				</div>
@@ -113,7 +116,6 @@
 		getProjectShareAPI
 	} from '@/api/Project';
 	import axios from 'axios';
-	// import qs from 'qs';
 
 	// API服务器地址
 	const SERVER_HOST = process.env.VUE_APP_BASE_API;
@@ -145,10 +147,14 @@
 				isNotShareMode: true,
 				/**网络请求的文档URL*/
 				fileUrl: '',
+				/**网络请求的文档URL使用代理请求*/
+				fileUrlProxy: false,
 				/**网络请求的文档是否正在加载中*/
 				fileUrlLoading: false,
 				/**资源正在加载中*/
 				dataLoading: false,
+				/**是否开启支持代理请求*/
+				enableProxy: true,
 				/**Main中要显示的内容:PROJECT=项目,GROUP=分组,REQUEST_TEST=请求测试,API=API*/
 				mainShowMode: MAIN_SHOW_MODE_PROJECT,
 				/**当前加载的项目*/
@@ -272,6 +278,10 @@
 			};
 		},
 		created() {
+			console.log('config enable proxy: ' + process.env.VUE_APP_ENABLE_PROXY)
+			if (process.env.VUE_APP_ENABLE_PROXY == 'false') {
+				this.enableProxy = false;
+			}
 			var pid = getParams('id', window.location.search);
 			var sid = getParams('sid', window.location.search);
 			var fileUrl = getParams('fileUrl', window.location.search);
@@ -424,8 +434,7 @@
 				this.fileUrlLoading = true;
 				this.showOrHideDataLoading(true);
 				var urls = this.fileUrl;
-				if (urls.charAt(0) == 'P' && urls.charAt(1) == ':') {
-					urls = urls.substring(2);
+				if (this.enableProxy && this.fileUrlProxy) {
 					axios
 						.get(SERVER_HOST + '/proxy/project?url=' + urls + '&token=' + this.sessionToken)
 						.then(res => {
@@ -855,7 +864,8 @@
 						} else {
 							api.parameters = [];
 						}
-						if (api.responses != null && api.responses.length > 0 && (api.responses[0].status == null || api
+						if (api.responses != null && api.responses.length > 0 && (api.responses[0].status ==
+								null || api
 								.responses[0].data == null)) {
 							api.responses = [{
 								status: 200,
