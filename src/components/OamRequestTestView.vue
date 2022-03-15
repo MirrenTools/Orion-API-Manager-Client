@@ -126,8 +126,8 @@
 							<pre><code>{{api.response}}</code></pre>
 						</el-tab-pane>
 						<el-tab-pane :label="$t('HeaderInfo')" name="header" style="color: #409eff;">
-							<el-divider content-position="left" v-if="api.requestHenders">{{ $t('RequestHeader') }}</el-divider>
-							<div v-for="(value, key) in api.requestHenders" :key="key" style="display: flex;">
+							<el-divider content-position="left" v-if="api.requestHeaders">{{ $t('RequestHeader') }}</el-divider>
+							<div v-for="(value, key) in api.requestHeaders" :key="key" style="display: flex;">
 								<div>{{ key }}</div>
 								<div style="margin: 0 0.5rem;">:</div>
 								<div style="color: #ff7de9;">{{ value }}</div>
@@ -180,6 +180,8 @@ export default {
 				requestType: 'x-www-form-urlencoded',
 				/**请求类型合集*/
 				consumes: ['x-www-form-urlencoded', 'application/json', 'multipart/form-data', 'application/xml'],
+				/**请求的Header*/
+				requestHeaders: {},
 				/**自定义请求后台的参数*/
 				customRequestParams: [],
 				/**自定义请求的body*/
@@ -339,7 +341,7 @@ export default {
 				requestData.headers = {};
 				if (header != null) {
 					for (var key in header) {
-						this.api.requestHenders[key] = header[key];
+						this.api.requestHeaders[key] = header[key];
 					}
 					requestData.headers['x-header'] = JSON.stringify(header);
 				}
@@ -350,7 +352,7 @@ export default {
 				if (header != null) {
 					requestData.headers = header;
 					for (var hkey in header) {
-						this.api.requestHenders[hkey] = header[hkey];
+						this.api.requestHeaders[hkey] = header[hkey];
 					}
 				}
 			}
